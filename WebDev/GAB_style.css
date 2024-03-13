@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 
 *{
     padding: 0;
@@ -11,12 +13,31 @@
 img{
     width: 100%;
     display: flex;
+    border-radius: 50%;
+    margin: left;
 }
 
 
 
 body{
-    background-color: #181818;
+    font-family: 'Poppins', sans-serif;
+    margin: 0%;
+    background: linear-gradient(-45deg, #4158D0,#e560dc,
+    #ffb374,#ef5f5f,#d840b6); 
+    
+    width: 100%;
+    height: 100vh;
+    
+    background-size: 400% 400%;
+
+    animation: animate 12s ease infinite;
+    
+}
+
+@keyframes animate{
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 50%; }
 }
 nav{
     max-width:  1200px;
@@ -27,4 +48,56 @@ nav{
     justify-content: space-between;
     gap: 2rem;
 }
+
+a{
+    text-decoration: none;
+}
+
+.nav-logo{
+    max-width: 100px;
+}
+.nav-links{
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+.link a{
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+.link a::after{
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #ef5f5f;
+    transition: all 0.3s ease;
+}
+.link a:hover::after{
+    width: 100%;
+}
+.btn{
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 5px;
+    background-color: bisque;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn:hover{
+    background-color: beige;
+    transition: all 0.3s ease;
+}
+.container{
+    max-width: 1200px;
+    margin: auto;
+    padding: 5rem 2rem;
+}
+
+
 

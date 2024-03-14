@@ -57,6 +57,7 @@ a{
     max-width: 100px;
 }
 .nav-links{
+    margin: auto;
     font-weight: 600;
     list-style: none;
     display: flex;

@@ -8,47 +8,58 @@
     <title>GAB_CV</title>
 </head>
 <body>
-    <nav>
-        <div class="nav-logo">
-            <a href="#">
-                <img src="Res/logo1.PNG">
-            </a>
-        </div>
-        
-        
-        
-        <ul class="nav-links">
-            <li class="link"><a href="#">Home</a></li>
-            <li class="link"><a href="#">Music</a></li>
-            <li class="link"><a href="#">Tetris</a></li>
-            <li class="link"><a href="#">Shit</a></li>
-            <button class="btn"> gimme money</button>
-        </ul>
-        
-    </nav>
-    
-    <header class="container">
-        <div class="content">
+    <header class="header">
+        <nav>
+            <H1>CV</H1>
+            <ul class="nav-links">
+                <li class="link"><a href="#">Home</a></li>
+                <li class="link"><a href="#">Music</a></li>
+                <li class="link"><a href="#">Tetris</a></li>
+                <li class="link"><a href="#">Shit</a></li>
+                <button class="btn"> GitHub</button>
+                <button class="Volumebtn">
+                    <img id="volImg"class="vol" src="Res/volON.png" alt="Volume Button" width="40" height="40"/>
+                </button>
+            </ul>
             
-            <H1>Curriculum Vitae</H1>
-            <h4>Gabriel Ozeg</h4>
-            <p>
-                Skills: C++
-            </p>
-            
-            <h2>Projects</H2>
-            <h4>Gabriel Ozeg</h4>
-            <p>
-                This website is project in itself; Repo=...
-            </p>
-            
-        </div>
+        </nav>
     </header>
+    <main>
+        <section class="title">
+            <H1 id="Curriculum">Curriculum Vitae</H1>
+        </section>
+        
+        <section class="AboutMe">
+            <img class="logo" src="Res/logo1.PNG" width="40" height="40"/>
+            <H1>About me</H1>
+            <h4>Gabriel Ozeg</h4>
+            <p>
+                Skills: noob C++
+            </p>
+            
+        </section>
+        
+        <section class="Projects">
+            <H1>Projects</H1>
+        </section>
+
+        <section class="projDesc">
+            <h1>Projects</h1>
+            <h4></h4>
+            <p>
+                
+            </p>
+        </section>
+    </main>
+
     
-    <audio controls autoplay loop id="_Audio">
-        <source src="Res/nujabes.wav">
+    <audio loop autoplay id="_Audio">
+        <source src="Res/Peace&Serenity.mp3">
         Your browser does not support the audio element.
     </audio>
+    <footer class="footer">
+    </footer>
+
     <script src="GAB_script.js"></script>
 
 </body>

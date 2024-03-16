@@ -12,6 +12,10 @@
     window.open("https://github.com/Gabrax", "_blank");
   }
 
+  /*function scrolltoTop(){
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }*/
+
 
   var audio = document.getElementById("_Audio");
   audio.volume = 0.01;

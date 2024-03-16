@@ -9,13 +9,18 @@
     box-sizing: border-box;
 }
 
-.logo{
+nav{
+    max-width:  1200px;
+    margin: auto;
+    padding: 2rem 1rem;
     display: flex;
-    border-radius: 50%;
-    margin: 10px;
-    margin-left: 260px;
-    width: 40%;
-    height: 40%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body{
@@ -28,26 +33,35 @@ body{
     min-height: 100vh;
     
     background-size: 400% 400%;
-
+    
     animation: animate 12s ease infinite;
     
 }
 
 
-nav{
-    max-width:  1200px;
-    margin: auto;
-    padding: 2rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
+
+
+.AboutMe .content {
+    overflow: hidden; /* Clear floats */
 }
 
-a{
-    text-decoration: none;
-    color: #ef5f5f;
+.logo{
+    display: flex;
+    border-radius: 50%;
+    margin: 10px;
+    margin-left: 260px;
+    width: 40%;
+    height: 40%;
 }
+.AboutMe .logo {
+    float: right; /* Float the image to the right */
+    margin-left: 10px;
+}
+.AboutMe h4 {
+    margin-bottom: 20px; /* Add margin below the h4 element */
+}
+
+
 
 /*StickyHeader*/
 .nav-links{
@@ -60,6 +74,10 @@ a{
     animation: fade-up 2s;
 }
 
+a{
+    text-decoration: none;
+    color: #ef5f5f;
+}
 .link a{
     position: relative;
     padding-bottom: 0.75rem;

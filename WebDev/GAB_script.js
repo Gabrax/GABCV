@@ -8,7 +8,9 @@
   var newText = heading.innerHTML.replace('V', '<span style="-webkit-text-fill-color: transparent; -webkit-text-stroke: 2px #ef5f5f;">V</span>');
   heading.innerHTML = newText;
 
-
+  function mainprofileGIT(){
+    window.open("https://github.com/Gabrax", "_blank");
+  }
 
 
   var audio = document.getElementById("_Audio");

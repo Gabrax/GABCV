@@ -9,20 +9,10 @@
     box-sizing: border-box;
 }
 
-.logo{
-    display: flex;
-    border-radius: 50%;
-    margin: 10px;
-    margin-left: 260px;
-    width: 40%;
-    height: 40%;
-}
-
 body{
     font-family: 'Poppins', sans-serif;
     margin: 0%;
-    background: linear-gradient(-45deg, #4158D0,#e560dc,
-    #ffb374,#ef5f5f,#d840b6); 
+    background:  #292728;
     
     width: 100%;
     min-height: 100vh;
@@ -30,9 +20,7 @@ body{
     background-size: 400% 400%;
 
     animation: animate 12s ease infinite;
-    
 }
-
 
 nav{
     max-width:  1200px;
@@ -113,61 +101,6 @@ a{
     -webkit-text-fill-color:transparent;
     -webkit-text-stroke: 1px #ef5f5f;
     animation: fade-up 2s;
-}
-
-.AboutMe{
-    color: aliceblue;
-    background-color: #000000;
-    border-radius: 5%;
-    width: 500px;
-    height: 500px; 
-    margin: auto; 
-    margin-top: 10px;
-    padding: 20px; 
-    text-align: left;
-    margin-left: auto;
-    margin-right: auto; 
-}
-
-.vol{
-    width: 25px;
-    height: 25px;
-}
-
-.title H1{
-    margin-top: 200px;
-    text-align: center;
-    font-size: 36px;
-}
-
-.Projects H1{
-    margin-top: 165px;
-    text-align: center;
-    font-size: 36px;
-}
-
-.projDesc{
-    color: aliceblue;
-    background-color: #000000;
-    border-radius: 5%;
-    width: 500px;
-    height: 500px; 
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px; 
-    padding: 20px; 
-    text-align: left; 
-}
-
-.Volumebtn {
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 0;
-}
-
-.Volumebtn:focus {
-    outline: none; 
 }
 /*StickyHeader*/
 

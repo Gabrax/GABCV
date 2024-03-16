@@ -62,7 +62,7 @@ a{
     display: flex;
     align-items: center;
     gap: 3rem;
-    animation: fade-up 1s;
+    animation: fade-up 2s;
 }
 .link a{
     position: relative;
@@ -110,7 +110,7 @@ a{
     font-size: 36px;
     -webkit-text-fill-color:transparent;
     -webkit-text-stroke: 1px #ef5f5f;
-    animation: fade-up 1s;
+    animation: fade-up 2s;
 }
 
 
@@ -160,7 +160,7 @@ a{
 }
 
 .Volumebtn:focus {
-    outline: none; /* Remove outline when button is focused */
+    outline: none; 
 }
 
 @keyframes fade-up{

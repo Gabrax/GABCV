@@ -61,6 +61,18 @@ body{
     margin-bottom: 20px; /* Add margin below the h4 element */
 }
 
+.logos{
+    display: flex;
+}
+.logo:nth-child(2){
+    transition-delay: 200ms;
+}
+.logo:nth-child(3){
+    transition-delay: 400ms;
+}
+.logo:nth-child(4){
+    transition-delay: 600ms;
+}
 
 
 
@@ -199,7 +211,7 @@ a{
     text-align: left; 
 }
 
-.Volumebtn {
+/*.Volumebtn {
     border: none;
     background: none;
     cursor: pointer;
@@ -208,12 +220,32 @@ a{
 
 .Volumebtn:focus {
     outline: none; 
+}*/
+
+.hidden{
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateX(-100%);
+    transition: all 1s;
 }
+.show{
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+}
+
 /*StickyHeader*/
 
 
 
 /*Animations*/
+
+@media(prefers-reduced-motion){
+    .hidden{
+        transition: none;
+    }
+}
+
 @keyframes expandWidth {
     0% {
         width: 0;

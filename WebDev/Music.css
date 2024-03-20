@@ -32,10 +32,6 @@ nav{
     gap: 2rem;
 }
 
-a{
-    text-decoration: none;
-    color: #ef5f5f;
-}
 
 /*StickyHeader*/
 .nav-links{
@@ -44,8 +40,13 @@ a{
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 3rem;
+    gap: 2rem;
     animation: fade-up 2s;
+}
+
+a{
+    text-decoration: none;
+    color: #ef5f5f;
 }
 
 .link a{
@@ -68,12 +69,23 @@ a{
     width: 100%;
 }
 
+/* Style specifically for the "Home" link */
+.link a[href="#"]::after {
+    width: 100%; /* Set the initial width to 100% for the Home link */
+}
+
+/* Animation for the "Home" link on click*/ 
+.link a.home::after {
+    animation: toggleWidth 0.5s forwards;
+}
+
 .btn{
-    padding: 1rem 2rem;
-    font-size: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
     font-weight: 600;
-    border-radius: 5px;
-    background-color: bisque;
+    border-radius: 100px;
+    background: none;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -81,6 +93,12 @@ a{
 .btn:hover{
     background-color: beige;
     transition: all 0.3s ease;
+}
+
+.btn i {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #ef5f5f; /* Change the color to your desired color */
 }
 
 .header{
@@ -105,6 +123,16 @@ a{
 /*StickyHeader*/
 
 /*Animations*/
+
+@keyframes toggleWidth {
+    0%, 100% {
+        width: 100%;
+    }
+    50% {
+        width: 20%;
+    }
+}
+
 @keyframes animate{
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 100%; }

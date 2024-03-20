@@ -12,12 +12,33 @@
     window.open("https://github.com/Gabrax", "_blank");
   }
 
-  /*function scrolltoTop(){
+  function mainprofileLI(){
+    window.open("https://www.linkedin.com/in/gabriel-ozeg-136481200/", "_blank");
+  }
+
+
+  document.addEventListener("DOMContentLoaded", function() {
+    var homeLink = document.querySelector('.link a[href="#"]');
+    
+      homeLink.addEventListener("click", function(event) {
+          // Prevent the default behavior of the link
+          event.preventDefault();
+          
+          // Remove and reapply the 'home' class to trigger the animation
+          homeLink.classList.remove('home');
+          setTimeout(function() {
+              homeLink.classList.add('home');
+          }, 10); // Small delay to allow class removal to take effect
+      });
+  });
+  
+
+  function scrolltoTop(){
     window.scrollTo({top: 0, behavior: 'smooth'});
-  }*/
+  }
 
 
-  var audio = document.getElementById("_Audio");
+  /*var audio = document.getElementById("_Audio");
   audio.volume = 0.01;
 
   window.onload = function() {
@@ -44,12 +65,12 @@
   var volumeImage = document.getElementById("volImg");
   volumeImage.addEventListener("click", function() {
     
-    if (volumeImage.src.endsWith("Res/volON.png")) {
-        
-        volumeImage.src = "Res/volOFF.png";
-    } else {
+    if (volumeImage.src.endsWith("Res/volOFF.png")) {
         
         volumeImage.src = "Res/volON.png";
+    } else {
+        
+        volumeImage.src = "Res/volOFF.png";
     }
-  });
+  });*/
 

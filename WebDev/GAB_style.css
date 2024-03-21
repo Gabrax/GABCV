@@ -1,6 +1,65 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 
+
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #4158D0,#e560dc,
+    #ffb374,#ef5f5f,#d840b6); 
+    margin: 0;
+    padding: 0;
+    animation: animate 10s ease infinite;
+}
+
+section{
+    display: grid;
+    place-items: center;
+    align-content: center;
+    min-height: 100vh;
+}
+
+.title H1{
+    font-size: 80px;
+}
+
+.hidden{
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateX(-100%);
+    transition: all 1s;
+}
+.show{
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+}
+
+
+.logos{
+    display: flex;
+}
+
+.logo:nth-child(2){
+    transition-delay: 200ms;
+}
+
+.logo:nth-child(3){
+    transition-delay: 400ms;
+}
+
+.logo:nth-child(4){
+    transition-delay: 600ms;
+}
+
+
+
+.vol{
+    width: 25px;
+    height: 25px;
+}
+
+/*StickyHeader*/
 *{
     padding: 0;
     margin: 0;
@@ -12,71 +71,13 @@
 nav{
     max-width:  1200px;
     margin: auto;
-    padding: 2rem 1rem;
+    padding: 1rem 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
-body{
-    font-family: 'Poppins', sans-serif;
-    margin: 0%;
-    background: linear-gradient(-45deg, #4158D0,#e560dc,
-    #ffb374,#ef5f5f,#d840b6); 
-    
-    width: 100%;
-    min-height: 100vh;
-    
-    background-size: 400% 400%;
-    
-    animation: animate 12s ease infinite;
-    
-}
-
-
-
-
-.AboutMe .content {
-    overflow: hidden; /* Clear floats */
-}
-
-.logo{
-    display: flex;
-    border-radius: 50%;
-    margin: 10px;
-    margin-left: 260px;
-    width: 40%;
-    height: 40%;
-}
-.AboutMe .logo {
-    float: right; /* Float the image to the right */
-    margin-left: 10px;
-}
-.AboutMe h4 {
-    margin-bottom: 20px; /* Add margin below the h4 element */
-}
-
-.logos{
-    display: flex;
-}
-.logo:nth-child(2){
-    transition-delay: 200ms;
-}
-.logo:nth-child(3){
-    transition-delay: 400ms;
-}
-.logo:nth-child(4){
-    transition-delay: 600ms;
-}
-
-
-
-/*StickyHeader*/
 .nav-links{
     margin: auto;
     font-weight: 600;
@@ -111,12 +112,12 @@ a{
     width: 100%;
 }
 
-/* Style specifically for the "Home" link */
+
 .link a[href="#"]::after {
-    width: 100%; /* Set the initial width to 100% for the Home link */
+    width: 100%; 
 }
 
-/* Animation for the "Home" link on click*/ 
+
 .link a.home::after {
     animation: toggleWidth 0.5s forwards;
 }
@@ -143,13 +144,13 @@ a{
 .btn i {
     font-size: 1.5rem;
     font-weight: 300;
-    color: #ef5f5f; /* Change the color to your desired color */
+    color: #ef5f5f; 
 }
 
 .header{
     position: fixed;
     display: flex;
-    top: 0px;
+    top: 0;
     align-items: center;
     justify-content: space-between;
     width: 100%;
@@ -157,6 +158,7 @@ a{
     margin: auto;
     padding: 1px 20px;
     background-color: #000000;
+    z-index: 1000; /* Adjust as needed */
 }
 
 .header H1{
@@ -167,49 +169,6 @@ a{
     
 }
 
-.AboutMe{
-    color: aliceblue;
-    background-color: #000000;
-    border-radius: 5%;
-    width: 500px;
-    height: 500px; 
-    margin: auto; 
-    margin-top: 10px;
-    padding: 20px; 
-    text-align: left;
-    margin-left: auto;
-    margin-right: auto; 
-}
-
-.vol{
-    width: 25px;
-    height: 25px;
-}
-
-.title H1{
-    margin-top: 200px;
-    text-align: center;
-    font-size: 36px;
-}
-
-.Projects H1{
-    margin-top: 165px;
-    text-align: center;
-    font-size: 36px;
-}
-
-.projDesc{
-    color: aliceblue;
-    background-color: #000000;
-    border-radius: 5%;
-    width: 500px;
-    height: 500px; 
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px; 
-    padding: 20px; 
-    text-align: left; 
-}
 
 /*.Volumebtn {
     border: none;
@@ -221,30 +180,17 @@ a{
 .Volumebtn:focus {
     outline: none; 
 }*/
-
-.hidden{
-    opacity: 0;
-    filter: blur(5px);
-    transform: translateX(-100%);
-    transition: all 1s;
-}
-.show{
-    opacity: 1;
-    filter: blur(0);
-    transform: translateX(0);
-}
-
 /*StickyHeader*/
 
 
 
 /*Animations*/
-
 @media(prefers-reduced-motion){
     .hidden{
         transition: none;
     }
 }
+
 
 @keyframes expandWidth {
     0% {

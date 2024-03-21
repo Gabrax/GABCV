@@ -7,27 +7,107 @@ body{
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(-45deg, #4158D0,#e560dc,
     #ffb374,#ef5f5f,#d840b6); 
+    background-size: 400% 400%;
     margin: 0;
     padding: 0;
     animation: animate 10s ease infinite;
 }
 
-section{
-    display: grid;
-    place-items: center;
-    align-content: center;
-    min-height: 100vh;
+
+.container {
+    color: #ffb374;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #292728;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+    align-items: center;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 36px;
+    margin: 0;
+}
+
+header p {
+    font-size: 18px;
+    color: #555;
+    color: #ef5f5f;
+}
+
+.profile-image {
+    margin-bottom: 20px;
+    margin-left: 305px;
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.profile-image:hover img {
+    transform: scale(1.1);
+}
+
+section {
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 1px;
+    color: #333;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .title H1{
     font-size: 80px;
+    animation: fade-up 4s;
+    margin-top: 120px;
+    text-align: center;
 }
 
 .hidden{
     opacity: 0;
     filter: blur(5px);
-    transform: translateX(-100%);
+    transform: translateY(50px);
     transition: all 1s;
+    transition-delay: 400ms;
 }
 .show{
     opacity: 1;
@@ -35,21 +115,20 @@ section{
     transform: translateX(0);
 }
 
-
 .logos{
     display: flex;
 }
 
 .logo:nth-child(2){
-    transition-delay: 200ms;
+    transition-delay: 600ms;
 }
 
 .logo:nth-child(3){
-    transition-delay: 400ms;
+    transition-delay: 800ms;
 }
 
 .logo:nth-child(4){
-    transition-delay: 600ms;
+    transition-delay: 1000ms;
 }
 
 
@@ -85,7 +164,7 @@ nav{
     display: flex;
     align-items: center;
     gap: 2rem;
-    animation: fade-up 2s;
+    animation: fade-down 2s;
 }
 
 a{
@@ -165,7 +244,7 @@ a{
     font-size: 36px;
     -webkit-text-fill-color:transparent;
     -webkit-text-stroke: 1px #ef5f5f;
-    animation: fade-up 2s;
+    animation: fade-down 2s;
     
 }
 

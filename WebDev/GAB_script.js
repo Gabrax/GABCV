@@ -36,20 +36,23 @@
   function scrolltoTop(){
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
-
+  
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-        console.log(entry)
-        if(entry.isIntersecting){
-          entry.target.classList.add('show');
-        }else{
-          entry.target.classList.remove('show');
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+        } else {
+            entry.target.classList.remove('show');
         }
     });
-  });
+}, {
+    threshold: 0.1 // Adjust threshold as needed
+});
 
-  const hiddenElements = document.querySelectorAll('.hidden');
-  hiddenElements.forEach((el) => observer.observe(el));
+const hiddenElements = document.querySelectorAll('.hidden');
+hiddenElements.forEach((el) => observer.observe(el));
+
+
 
   /*Graduate in Business Process Automation at the Faculty of Management 2020-2023
   Second-degree student in Computer Science at the UŁ Faculty of Informatics and Mathematics 2023-..*/

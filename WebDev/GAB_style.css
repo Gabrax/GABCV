@@ -42,6 +42,68 @@ body{
     filter: blur(3.5rem);
 }
 
+.Projtitle H1{
+    margin: 300px auto 50px auto;
+    color: #fff;
+    font-size: 70px;
+}
+
+.container2 {
+    position: relative;
+    color: #ffb374;
+    max-width: 800px;
+    max-height: 800px;
+    margin: 300px auto 50px auto;
+    padding: 20px;
+    background-color: #292728;
+    border-radius: 10px;
+    /*box-shadow: 0 0 20px rgb(255, 255, 255);*/
+    align-items: center;
+}
+
+.container2::before,.container2::after{
+    content: "";
+    position: absolute;
+    inset: -.5rem;
+    z-index: -1;
+    background: conic-gradient(from var(--gradient-angle), #4158D0,#e560dc,
+    #ffb374,#ef5f5f,#d840b6,#ffb374,#ef5f5f,#e560dc,#4158D0); 
+    border-radius: inherit;
+    animation: rotation 20s linear infinite;
+}
+
+.container2::after{
+    filter: blur(3.5rem);
+}
+
+.container3 {
+    position: relative;
+    color: #ffb374;
+    max-width: 800px;
+    max-height: 800px;
+    margin: 300px auto 50px auto;
+    padding: 20px;
+    background-color: #292728;
+    border-radius: 10px;
+    /*box-shadow: 0 0 20px rgb(255, 255, 255);*/
+    align-items: center;
+}
+
+.container3::before,.container3::after{
+    content: "";
+    position: absolute;
+    inset: -.5rem;
+    z-index: -1;
+    background: conic-gradient(from var(--gradient-angle), #4158D0,#e560dc,
+    #ffb374,#ef5f5f,#d840b6,#ffb374,#ef5f5f,#e560dc,#4158D0); 
+    border-radius: inherit;
+    animation: rotation 20s linear infinite;
+}
+
+.container3::after{
+    filter: blur(3.5rem);
+}
+
 @property --gradient-angle{
     syntax: "<angle>";
     initial-value: 0deg;
@@ -176,11 +238,7 @@ li {
     transition-delay: 1000ms;
 }
 
-.Projtitle H1{
-    margin: 150px auto 50px auto;
-    color: #fff;
-    font-size: 70px;
-}
+
 
 .vol{
     width: 25px;

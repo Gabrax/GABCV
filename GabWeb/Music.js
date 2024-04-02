@@ -24,31 +24,77 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 import * as THREE from 'three';
+//import { Noise } from 'noisejs';
+let scene, camera, renderer,controls, sphere;
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+function init(){
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color("#292728");
+  camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild(renderer.domElement);
+  //controls = new THREE.OrbitControls( camera, renderer.domElement );
+  //controls.autoRotate = false;
+  
+  var light = new THREE.DirectionalLight(0xffffff, 1.2);
+  light.position.set(100, 100, 100);
+  scene.add(light);
+  
+  var geometry = new THREE.SphereGeometry( 1, 12, 16 ); 
+  var material = new THREE.MeshLambertMaterial( { color: 0xFAF9F6,wireframe: false }); 
+  sphere = new THREE.Mesh( geometry, material ); 
+  scene.add( sphere );
+  
+  
+  camera.position.z = 5;
 
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+}
 
-camera.position.z = 5;
+
+function onWindowResize(){
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+window.addEventListener('resize', onWindowResize, false);
+
+//const noise = new Noise(Math.random());
+
+function update(){
+  
+  var time = performance.now() * 0.001;
+  for (var i=0; i < sphere.geometry.vertices.length; i++){
+    var p = sphere.geometry.vertices[i];
+    p.normalize().multiplyScalar(1 + 0.3 * noise.perlin3(p.x + time, p.y, p.z));
+  }
+  sphere.geometry.verticesNeedUpdate = true;
+  sphere.geometry.computeVertexNormals();
+  sphere.geometry.normalsNeedUpdate = true;
+}
+
 
 function animate() {
-	requestAnimationFrame( animate );
-
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
-
+  requestAnimationFrame( animate );
+  //update();
+  
+  
+	//sphere.rotation.x += 0.01;
+	//sphere.rotation.y += 0.01;
+  //cube.rotation.x += 0.01;
+	//cube.rotation.y += 0.01;
+  
 	renderer.render( scene, camera );
 }
 
+
+init();
 animate();
+
+
+
 
 
 

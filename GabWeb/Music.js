@@ -3,7 +3,7 @@ let noise = new SimplexNoise();
 const area = document.getElementById("visualiser");
 const label = document.getElementById("label");
 audioInput.addEventListener("change", setAudio, false);
-let audio = new Audio("Res/Peace&Serenity.mp3");
+let audio = new Audio();
 function setAudio() {
   audio.pause()
   const audioFile = this.files[0];
@@ -152,20 +152,26 @@ const image = document.getElementById('cover'),
       nextbtn = document.getElementById('next'),
       playbtn = document.getElementById('play');
 
-const music = new Audio();
+//const music = new Audio();
 
 const songs = [
   {
-    path: 'Res/Peace&Serenity.mp3',
-    displayName: 'restless dreams',
-    cover: 'Res/original.gif',
-    artist: 'akira',
+    path: 'Res/Music/Nujabes - No way back.mp3',
+    displayName: 'No way back',
+    cover: 'Res/Music/nujabes-departure.jpg',
+    artist: 'Nujabes',
   },
   {
-    path: 'Res/$UICIDEBOY$ - PARIS.mp3',
-    displayName: 'Paris',
-    cover: 'Res/vcpkg.png',
-    artist: '$UICIDEBOY$',
+    path: 'Res/Music/[dko] - fnk.mp3',
+    displayName: '[dko] - fnk',
+    cover: 'Res/Music/dko - fnk.png',
+    artist: 'Lush Loops',
+  },
+  {
+    path: 'Res/Music/ODESZA - We Were Young.mp3',
+    displayName: 'We Were Young',
+    cover: 'Res/Music/odesza-wewereyoung.png',
+    artist: 'ODESZA',
   },
 ]
 
@@ -186,7 +192,7 @@ function playMusic(){
 
   playbtn.classList.replace('fa-play','fa-pause');
   playbtn.setAttribute('title','Pause');
-  music.play();
+  audio.play();
 }
 
 function pauseMusic(){
@@ -194,11 +200,11 @@ function pauseMusic(){
 
   playbtn.classList.replace('fa-pause','fa-play');
   playbtn.setAttribute('title','Play');
-  music.pause();
+  audio.pause();
 }
 
 function loadMusic(songs){
-  music.src = songs.path;
+  audio.src = songs.path;
   title.textContent = songs.displayName;
   artist.textContent = songs.artist;
   image.src = songs.cover;
@@ -211,7 +217,7 @@ function changeMusic(direction){
 }
 
 function updateProgressBar(){
-  const {duration, currentTime} = music;
+  const {duration, currentTime} = audio;
   const progressPercent = (currentTime /duration) * 100;
   progress.style.width = `${progressPercent}%`;
 
@@ -223,13 +229,13 @@ function updateProgressBar(){
 function setProgressBar(e){
   const width = playerProgress.clientWidth;
   const clickX = e.offsetX;
-  music.currentTime = (clickX/width) * music.duration;
+  audio.currentTime = (clickX/width) * music.duration;
 }
 
 playbtn.addEventListener('click',togglePlay);
 prevbtn.addEventListener('click', ()=> changeMusic(-1));
 nextbtn.addEventListener('click', ()=> changeMusic(1));
-music.addEventListener('ended', ()=> changeMusic(1));
-music.addEventListener('timeupdate', updateProgressBar);
+audio.addEventListener('ended', ()=> changeMusic(1));
+audio.addEventListener('timeupdate', updateProgressBar);
 playerProgress.addEventListener('click', setProgressBar);
 loadMusic(songs[musicIndex]);

@@ -27,7 +27,7 @@ nav{
   margin-top: -175px; /* Half of the container's height */
   margin-left: -150px; /* Half of the container's width */
   background-color: #a59a9a;
-  height: 350px;
+  height: 370px;
   width: 300px;
   align-items: center;
   border-radius: 20px;
@@ -53,12 +53,48 @@ nav{
 }
 .player-controls{
   position: relative;
+  z-index: 0;
   text-align: center;
   cursor: pointer;
   top: -15px;
   left: 70px;
   width: 200px;
 }
+
+.slider{
+  -webkit-appearance: none;
+  appearance: none;
+  margin: auto;
+  position: relative;
+  left: -20px;
+  top: 15px;
+  display: flex;
+  width: 100%;
+  height: 0.4em;
+  border-radius: 3px;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; 
+  appearance: none;
+  width: 15px; 
+  height: 15px; 
+  background-color: #25282c; 
+  border-radius: 30%; 
+  cursor: pointer; 
+}
+
+.slider::-moz-range-thumb {
+  width: 15px; 
+  height: 15px; 
+  background-color: #25282c; 
+  border-radius: 30%; 
+  cursor: pointer; 
+}
+
+
+
+
+
 
 .fa-solid{
   font-size: 30px;
@@ -171,7 +207,7 @@ body {
   height: 100vh;
   overflow: hidden;
   font-family: 'Poppins', sans-serif;
-  background-color: #292728;
+  background-color: #000000;
 }
 
 #visualiser {

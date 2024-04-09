@@ -4,6 +4,7 @@ const area = document.getElementById("visualiser");
 const label = document.getElementById("label");
 audioInput.addEventListener("change", setAudio, false);
 let audio = new Audio();
+audio.volume = 0.5;
 function setAudio() {
   audio.pause()
   const audioFile = this.files[0];
@@ -49,7 +50,7 @@ function startVis() {
   const dataArray = new Uint8Array(bufferLength);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#292728");
+  scene.background = new THREE.Color("#000000");
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.z = 100;
   scene.add(camera);
@@ -62,7 +63,7 @@ function startVis() {
   const geometry = new THREE.IcosahedronGeometry(20,3);
   const material = new THREE.MeshLambertMaterial({
     color: "#ffffff",
-    wireframe: true
+    wireframe: false
 });
   const sphere = new THREE.Mesh(geometry, material);
 
@@ -151,9 +152,9 @@ const image = document.getElementById('cover'),
       prevbtn = document.getElementById('prev'),
       nextbtn = document.getElementById('next'),
       playbtn = document.getElementById('play');
-
+      
 //const music = new Audio();
-
+document.getElementById("volumeControl").addEventListener("input", setVolume);
 const songs = [
   {
     path: 'Res/Music/Nujabes - No way back.mp3',
@@ -186,12 +187,17 @@ function togglePlay(){
   }
 }
 
+function setVolume() {
+  let volume = document.getElementById("volumeControl").value;
+  audio.volume = volume / 100;
+}
 
 function playMusic(){
   isPlaying = true;
 
   playbtn.classList.replace('fa-play','fa-pause');
   playbtn.setAttribute('title','Pause');
+  setVolume();
   audio.play();
 }
 
@@ -229,7 +235,7 @@ function updateProgressBar(){
 function setProgressBar(e){
   const width = playerProgress.clientWidth;
   const clickX = e.offsetX;
-  audio.currentTime = (clickX/width) * music.duration;
+  audio.currentTime = (clickX/width) * audio.duration;
 }
 
 playbtn.addEventListener('click',togglePlay);

@@ -19,6 +19,120 @@ nav{
   gap: 2rem;
 }
 
+.container {
+  z-index: 1000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -175px; /* Half of the container's height */
+  margin-left: -150px; /* Half of the container's width */
+  background-color: #a59a9a;
+  height: 350px;
+  width: 300px;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease;
+  animation: fade-up 2s;
+}
+
+.container:hover{
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+}
+
+.container h2{
+  font-size: 25 px;
+  text-align: center;
+  margin: -10px 0 0;
+}
+.container h3{
+  font-size: 15 px;
+  font-weight: 400;
+  text-align: center;
+  margin: 0px 0 0;
+}
+.player-controls{
+  position: relative;
+  text-align: center;
+  cursor: pointer;
+  top: -15px;
+  left: 70px;
+  width: 200px;
+}
+
+.fa-solid{
+  font-size: 30px;
+  color: #666;
+  margin-right: 30px;
+  user-select: none;
+  transition: all 0.3 ease;
+}
+
+.fa-solid:hover{
+  filter: brightness(40%);
+}
+
+.play{
+  font-size: 44px;
+  position: relative;
+  top: 3px;
+}
+
+.player-progress{
+  background-color: aliceblue;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px 20px 35px;
+  height: 6px;
+  width: 86%;
+}
+
+.progress{
+  background-color: #212121;
+  border-radius: 5px;
+  height: 100%;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+.music-duration{
+  position: relative;
+  font-size: 12px;
+  top: -30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.player-img{
+  width: 200px;
+  height: 200px;
+  position: relative;
+  top: -50px;
+  left: 50px;
+}
+
+.player-img img{
+  object-fit: cover;
+  border-radius: 20px;
+  height: 0;
+  width: 0;
+  opacity: 0;
+  box-shadow: 0 5px 30px 5px rgba(0, 0, 0, 0.5);
+}
+
+.player-img:hover img{
+  box-shadow: 0 5px 30px 5px rgba(0, 0, 0, 0.8);
+}
+
+.player-img img.active{
+  width: 100%;
+  height: 100%;
+  transition: all 0.5s;
+  opacity: 1;
+}
+
+
+
 input {
   display: none;
 }
@@ -49,7 +163,7 @@ label:hover{
 
 #visualiser {
   cursor: pointer;
-  animation: fade-up 2s;
+  animation: fade-up 10s;
 }
 body {
   display: flex;

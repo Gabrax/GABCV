@@ -18,7 +18,7 @@
       <nav>
           <H1>CV</H1>
           <ul class="nav-links">
-              <li class="link"><a href="/index.html">Home</a></li>
+              <li class="link"><a href="GAB.html">Home</a></li>
               <li class="link"><a href="#">Music</a></li>
               <li class="link"><a href="$">Tetris</a></li>
               <button class="btn" id="GH"><i class="fab fa-github"></i></button>
@@ -26,6 +26,28 @@
           </ul>       
       </nav>
   </header>
+
+  <div class="container">
+    <div class="player-img">
+      <img src="Res/original.gif" class="active" id="cover">
+    </div>
+      <h2 id="title">simea</h2>
+      <h3 id="artist">siema</h3>
+      <div class="player-progress" id="player-progress">
+        <div class="progress" id="progress"></div>
+        <div class="music-duration">
+          <span id="curr-time">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+      </div>
+
+      <div class="player-controls">
+        <i class="fa-solid fa-backward" title="Prev" id="prev"></i>
+        <i class="fa-solid fa-play" title="Play" id="play"></i>
+        <i class="fa-solid fa-forward" title="Next" id="next"></i>
+      </div>
+    </div>
+
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>

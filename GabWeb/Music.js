@@ -138,3 +138,98 @@ function avg(arr) {
 function max(arr) {
   return arr.reduce(function (a, b) { return Math.max(a, b); })
 }
+
+
+
+const image = document.getElementById('cover'),
+      title = document.getElementById('title'),
+      artist = document.getElementById('artist'),
+      currentTimeEL = document.getElementById('curr-time'),
+      durationEL = document.getElementById('duration'),
+      progress = document.getElementById('progress'),
+      playerProgress = document.getElementById('player-progress'),
+      prevbtn = document.getElementById('prev'),
+      nextbtn = document.getElementById('next'),
+      playbtn = document.getElementById('play');
+
+const music = new Audio();
+
+const songs = [
+  {
+    path: 'Res/Peace&Serenity.mp3',
+    displayName: 'restless dreams',
+    cover: 'Res/original.gif',
+    artist: 'akira',
+  },
+  {
+    path: 'Res/$UICIDEBOY$ - PARIS.mp3',
+    displayName: 'Paris',
+    cover: 'Res/vcpkg.png',
+    artist: '$UICIDEBOY$',
+  },
+]
+
+let musicIndex = 0;
+let isPlaying = false;
+
+function togglePlay(){
+  if(isPlaying){
+    pauseMusic();
+  }else{
+    playMusic();
+  }
+}
+
+
+function playMusic(){
+  isPlaying = true;
+
+  playbtn.classList.replace('fa-play','fa-pause');
+  playbtn.setAttribute('title','Pause');
+  music.play();
+}
+
+function pauseMusic(){
+  isPlaying = false;
+
+  playbtn.classList.replace('fa-pause','fa-play');
+  playbtn.setAttribute('title','Play');
+  music.pause();
+}
+
+function loadMusic(songs){
+  music.src = songs.path;
+  title.textContent = songs.displayName;
+  artist.textContent = songs.artist;
+  image.src = songs.cover;
+}
+
+function changeMusic(direction){
+  musicIndex = (musicIndex + direction + songs.length) % songs.length;
+  loadMusic(songs[musicIndex]);
+  playMusic();
+}
+
+function updateProgressBar(){
+  const {duration, currentTime} = music;
+  const progressPercent = (currentTime /duration) * 100;
+  progress.style.width = `${progressPercent}%`;
+
+  const formatTime = (time) => String(Math.floor(time)).padStart(2, '0');
+  durationEL.textContent = `${formatTime(duration / 60)}:${formatTime(duration % 60)}`;
+  currentTimeEL.textContent = `${formatTime(currentTime / 60)}:${formatTime(currentTime % 60)}`;
+}
+
+function setProgressBar(e){
+  const width = playerProgress.clientWidth;
+  const clickX = e.offsetX;
+  music.currentTime = (clickX/width) * music.duration;
+}
+
+playbtn.addEventListener('click',togglePlay);
+prevbtn.addEventListener('click', ()=> changeMusic(-1));
+nextbtn.addEventListener('click', ()=> changeMusic(1));
+music.addEventListener('ended', ()=> changeMusic(1));
+music.addEventListener('timeupdate', updateProgressBar);
+playerProgress.addEventListener('click', setProgressBar);
+loadMusic(songs[musicIndex]);

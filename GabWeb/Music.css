@@ -57,7 +57,7 @@ nav{
   text-align: center;
   cursor: pointer;
   top: -15px;
-  left: 70px;
+  left: 65px;
   width: 200px;
 }
 
@@ -66,7 +66,7 @@ nav{
   appearance: none;
   margin: auto;
   position: relative;
-  left: -20px;
+  left: -15px;
   top: 15px;
   display: flex;
   width: 100%;
@@ -180,10 +180,12 @@ label{
   font-family: Arial, Helvetica, sans-serif;
   background-color: rgb(214, 214, 214);
   position: absolute;
+  margin-top: -15px; /* Half of the container's height */
+  margin-left: -45px; /* Half of the container's width */
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 1000;
+  animation: fade-up 2s;
 }
 
 label:hover{

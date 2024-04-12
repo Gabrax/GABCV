@@ -1,3 +1,20 @@
+const vertexShader = `
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+
+const fragmentShader = `
+    varying vec2 vUv;
+    uniform vec3 colorStart;
+    uniform vec3 colorEnd;
+    void main() {
+        gl_FragColor = vec4(mix(colorStart, colorEnd, vUv.y), 1.0);
+    }
+`;
+
 const audioInput = document.getElementById("audio");
 let noise = new SimplexNoise();
 const area = document.getElementById("visualiser");
@@ -60,10 +77,15 @@ function startVis() {
   renderer.setClearColor("#ffffff");
 
   area.appendChild(renderer.domElement);
+  //////////////////
   const geometry = new THREE.IcosahedronGeometry(20,3);
-  const material = new THREE.MeshLambertMaterial({
-    color: "#ffffff",
-    wireframe: false
+  const material = new THREE.ShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    uniforms: {
+        colorStart: { value: new THREE.Color("#ff0000") }, // Start color
+        colorEnd: { value: new THREE.Color("#00ff00") }   // End color
+    }
 });
   const sphere = new THREE.Mesh(geometry, material);
 

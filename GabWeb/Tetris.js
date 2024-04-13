@@ -120,13 +120,25 @@ class Tetris {
   const size = 40;
   const framePerSecond = 24;
   const gameSpeed = 3;
+  
+  const Startcanvas = document.getElementById("GTcanvas");
+  const StartEntercanvas = document.getElementById("GEcanvas")
   const canvas = document.getElementById("canvas");
+  const GameOverCanvas = document.getElementById("GOcanvas");
+  const GameOverEnter = document.getElementById("RTcanvas");
   const nextShapeCanvas = document.getElementById("nextShapeCanvas");
   const scoreCanvas = document.getElementById("scoreCanvas");
+
   const image = document.getElementById("image");
+
+  const GTcontext = Startcanvas.getContext("2d");
+  const GEcontext = StartEntercanvas.getContext("2d");  
+  const GOcontext = GameOverCanvas.getContext("2d");
+  const RTcontext = GameOverEnter.getContext("2d");
   const ctx = canvas.getContext("2d");
   const nctx = nextShapeCanvas.getContext("2d");
   const sctx = scoreCanvas.getContext("2d");
+
   const squareCountX = canvas.width / size;
   const squareCountY = canvas.height / size;
   
@@ -168,7 +180,7 @@ class Tetris {
       [0, 1, 1],
     ]),
   ];
-  
+  let gameStart = true;
   let gameMap;
   let gameOver;
   let currentShape;
@@ -234,14 +246,14 @@ class Tetris {
   };
   
   let drawBackground = () => {
-    drawRect(0, 0, canvas.width, canvas.height, "#bca0dc");
+    drawRect(0, 0, canvas.width, canvas.height, "#00000");
     for (let i = 0; i < squareCountX + 1; i++) {
       drawRect(
         size * i - whiteLineThickness,
         0,
         whiteLineThickness,
         canvas.height,
-        "white"
+        "black"
       );
     }
   
@@ -251,7 +263,7 @@ class Tetris {
         size * i - whiteLineThickness,
         canvas.width,
         whiteLineThickness,
-        "white"
+        "black"
       );
     }
   };
@@ -322,24 +334,52 @@ class Tetris {
     sctx.fillStyle = "white";
     sctx.fillText(score, 10, 50);
   };
-  
-  let drawGameOver = () => {
-    ctx.font = "64px Pixelify Sans";
-    ctx.fillStyle = "white";
-    ctx.fillText("Game Over!", 10, canvas.height / 2);
+
+  let drawStart = () => {
+    GTcontext.font = "64px Pixelify Sans";
+    GTcontext.fillStyle = "white";
+    GTcontext.fillText("TETRIS", 10, canvas.height / 2);
+    GEcontext.font = "30px Pixelify Sans";
+    GEcontext.fillStyle = "white";
+    GEcontext.fillText("Press 'Enter' to start", 10, canvas.height / 2);
   };
+  let clearStartcanvas = () => {
+    GTcontext.clearRect(0, 0, canvas.width, canvas.height);
+    GEcontext.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  let drawGameOver = () => {
+    GOcontext.font = "64px Pixelify Sans";
+    GOcontext.fillStyle = "white";
+    GOcontext.fillText("Game Over!", 10, canvas.height / 2);
+    RTcontext.font = "30px Pixelify Sans";
+    RTcontext.fillStyle = "white";
+    RTcontext.fillText("Press 'Enter' to restart", 10, canvas.height / 2);
+  };
+  let clearGameOver = () => {
+    GOcontext.clearRect(0, 0, canvas.width, canvas.height);
+    RTcontext.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
   
   let draw = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBackground();
-    drawSquares();
-    drawCurrentTetris();
-    drawNextShape();
-    drawScore();
-    if (gameOver) {
-      drawGameOver();
-      //canvas.style.display = "none";
+    if(gameStart){
+      drawStart();
     }
+        if(!gameStart){
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawBackground();
+          drawSquares();
+          drawCurrentTetris();
+          drawNextShape();
+          drawScore();
+            if (gameOver) {
+              drawGameOver();
+              canvas.style.display = "none";
+            }else{
+              canvas.style.display = "flex";
+            }
+        }
   };
   
   let getRandomShape = () => {
@@ -362,11 +402,30 @@ class Tetris {
   };
   
   window.addEventListener("keydown", (event) => {
-    if (event.keyCode == 37) currentShape.moveLeft();
-    else if (event.keyCode == 38) currentShape.changeRotation();
-    else if (event.keyCode == 39) currentShape.moveRight();
-    else if (event.keyCode == 40) currentShape.moveBottom();
+    const key = event.key;
+
+    if(gameStart){
+      if (key === "Enter") {
+        clearStartcanvas();
+        gameStart = false;
+      }
+    }
+
+    if(gameOver){
+      if (key === "Enter") {
+        resetVars();
+        clearGameOver();
+        gameStart = false;
+      }
+
+    }
+    if (key === "ArrowLeft") currentShape.moveLeft();
+    else if (key === "ArrowUp") currentShape.changeRotation();
+    else if (key === "ArrowRight") currentShape.moveRight();
+    else if (key === "ArrowDown") currentShape.moveBottom();
   });
+
+
   
   resetVars();
   gameLoop();

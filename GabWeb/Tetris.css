@@ -18,18 +18,62 @@
   height: auto;
 }
 
+.MapBorder {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-59%, -5px);
+  width: 350px;
+  height: auto;
+  z-index: -1;
+}
+
 .secondCanvas {
   position: absolute;
   top: 15%;
-  left: calc(50% + 420px); /* Adjust the value (420px) based on the width of mainCanvas and desired margin */
+  left: calc(50% + 220px); /* Adjust the value (420px) based on the width of mainCanvas and desired margin */
   width: 150px;
   height: auto;
 }
 .thirdCanvas {
   position: absolute;
   top: 11%;
-  left: calc(50% + 420px); /* Adjust the value (420px) based on the width of mainCanvas and desired margin */
+  left: calc(50% + 200px); /* Adjust the value (420px) based on the width of mainCanvas and desired margin */
   width: 150px;
+  height: auto;
+}
+.GameOverCanvas{
+  position: absolute;
+  top: 10%;
+  left: 52%;
+  transform: translate(-50%, 25px);
+  width: 350px;
+  height: auto;
+}
+.GameOverReset{
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-50%, 25px);
+  width: 220px;
+  height: auto;
+}
+
+.GameStartCanvas{
+  position: absolute;
+  top: 10%;
+  left: 52%;
+  transform: translate(-35%, 25px);
+  width: 350px;
+  height: auto;
+}
+
+.GameEnterCanvas {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-45%, 25px);
+  width: 220px;
   height: auto;
 }
 

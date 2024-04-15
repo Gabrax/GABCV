@@ -20,12 +20,15 @@
 
 .MapBorder {
   position: absolute;
-  top: 10%;
+  top: 50%;
   left: 50%;
-  transform: translate(-59%, -5px);
-  width: 350px;
-  height: auto;
+  margin-top: -374px; 
+  margin-left: -206px; 
+  height: 700px;
+  width: 400px;
+  align-items: center;
   z-index: -1;
+  animation: fade-up 2s;
 }
 
 .secondCanvas {
@@ -44,42 +47,51 @@
 }
 .GameOverCanvas{
   position: absolute;
-  top: 10%;
-  left: 52%;
-  transform: translate(-50%, 25px);
-  width: 350px;
-  height: auto;
+  top: 50%;
+  left: 50%;
+  margin-top: -370px; 
+  margin-left: -180px; 
+  height: 700px;
+  width: 400px;
+  align-items: center;
 }
 .GameOverReset{
   position: absolute;
-  top: 28%;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 25px);
-  width: 220px;
-  height: auto;
+  margin-top: -165px; 
+  margin-left: -120px; 
+  height: 370px;
+  width: 250px;
+  align-items: center;
 }
 
 .GameStartCanvas{
   position: absolute;
-  top: 10%;
-  left: 52%;
-  transform: translate(-35%, 25px);
-  width: 350px;
-  height: auto;
+  top: 50%;
+  left: 50%;
+  margin-top: -370px; 
+  margin-left: -115px; 
+  height: 700px;
+  width: 400px;
+  align-items: center;
+  animation: fade-up 2s;
 }
 
-.GameEnterCanvas {
+.GameEnterCanvas{
   position: absolute;
-  top: 28%;
+  top: 50%;
   left: 50%;
-  transform: translate(-45%, 25px);
-  width: 220px;
-  height: auto;
+  margin-top: -175px; 
+  margin-left: -109px; 
+  height: 370px;
+  width: 250px;
+  align-items: center;
+  animation: fade-up 2s;
 }
 
 body{
-  font-family: 'Poppins', sans-serif;
-  display: flex;
+  font-family: 'Poppins', 'Pixelify Sans', sans-serif;
   background-color: #000000;
 }
 

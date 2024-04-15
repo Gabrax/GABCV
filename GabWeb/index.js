@@ -8,31 +8,6 @@ var heading = document.getElementById('Curriculum');
 var newText = heading.innerHTML.replace('V', '<span style="-webkit-text-fill-color: transparent; -webkit-text-stroke: 2px #ef5f5f;">V</span>');
 heading.innerHTML = newText;
 
-function mainprofileGIT(){
-  window.open("https://github.com/Gabrax", "_blank");
-  
-}
-
-function mainprofileLI(){
-  window.open("https://www.linkedin.com/in/gabriel-ozeg-136481200/", "_blank");
-}
-
-
-document.addEventListener("DOMContentLoaded", function() {
-  var homeLink = document.querySelector('.link a[href="#"]');
-  
-    homeLink.addEventListener("click", function(event) {
-        // Prevent the default behavior of the link
-        event.preventDefault();
-        
-        // Remove and reapply the 'home' class to trigger the animation
-        homeLink.classList.remove('home');
-        setTimeout(function() {
-            homeLink.classList.add('home');
-        }, 10); // Small delay to allow class removal to take effect
-    });
-});
-
 
 function scrolltoTop(){
   window.scrollTo({top: 0, behavior: 'smooth'});
@@ -52,11 +27,6 @@ const observer = new IntersectionObserver((entries) => {
 
 const hiddenElements = document.querySelectorAll('.hidden');
 hiddenElements.forEach((el) => observer.observe(el));
-
-
-
-/*Graduate in Business Process Automation at the Faculty of Management 2020-2023
-Second-degree student in Computer Science at the UŁ Faculty of Informatics and Mathematics 2023-..*/
 
 
 /*var audio = document.getElementById("_Audio");

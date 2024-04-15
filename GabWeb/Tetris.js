@@ -118,8 +118,6 @@ class Tetris {
   
   const imageSquareSize = 24;
   const size = 40;
-  const framePerSecond = 24;
-  const gameSpeed = 3;
   
   const Startcanvas = document.getElementById("GTcanvas");
   const StartEntercanvas = document.getElementById("GEcanvas")
@@ -188,11 +186,30 @@ class Tetris {
   let score;
   let initialTwoDArr;
   let whiteLineThickness = 4;
+  const framePerSecond = 60;
+  const gameSpeed = 1;
   
-  let gameLoop = () => {
-    setInterval(update, 1000 / gameSpeed);
-    setInterval(draw, 1000 / framePerSecond);
-  };
+
+  let lastUpdateTime = 0;
+  let lastDrawTime = 0;
+
+let gameLoop = (timestamp) => {
+    
+    const deltaTimeUpdate = timestamp - lastUpdateTime;
+    const deltaTimeDraw = timestamp - lastDrawTime;
+
+    if (deltaTimeUpdate >= 1000 / gameSpeed) {
+        update();
+        lastUpdateTime = timestamp;
+    }
+
+    if (deltaTimeDraw >= 1000 / framePerSecond) {
+        draw();
+        lastDrawTime = timestamp;
+    }
+
+    requestAnimationFrame(gameLoop);
+};
   
   let deleteCompleteRows = () => {
     for (let i = 0; i < gameMap.length; i++) {
@@ -336,36 +353,39 @@ class Tetris {
   };
 
   let drawStart = () => {
+    GTcontext.clearRect(0, 0, Startcanvas.width, Startcanvas.height);
+    GEcontext.clearRect(0, 0, StartEntercanvas.width, StartEntercanvas.height);
+
     GTcontext.font = "64px Pixelify Sans";
     GTcontext.fillStyle = "white";
-    GTcontext.fillText("TETRIS", 10, canvas.height / 2);
+    GTcontext.fillText("TETRIS", 10, Startcanvas.height / 2);
     GEcontext.font = "30px Pixelify Sans";
     GEcontext.fillStyle = "white";
-    GEcontext.fillText("Press 'Enter' to start", 10, canvas.height / 2);
+    GEcontext.fillText("Press 'Enter' to start", 10, StartEntercanvas.height / 2);
   };
   let clearStartcanvas = () => {
-    GTcontext.clearRect(0, 0, canvas.width, canvas.height);
-    GEcontext.clearRect(0, 0, canvas.width, canvas.height);
+    GTcontext.clearRect(0, 0, Startcanvas.width, Startcanvas.height);
+    GEcontext.clearRect(0, 0, StartEntercanvas.width, StartEntercanvas.height);
   };
 
   let drawGameOver = () => {
     GOcontext.font = "64px Pixelify Sans";
     GOcontext.fillStyle = "white";
-    GOcontext.fillText("Game Over!", 10, canvas.height / 2);
+    GOcontext.fillText("Game Over!", 10, GameOverCanvas.height / 2);
     RTcontext.font = "30px Pixelify Sans";
     RTcontext.fillStyle = "white";
-    RTcontext.fillText("Press 'Enter' to restart", 10, canvas.height / 2);
+    RTcontext.fillText("Press 'Enter' to restart", 10, GameOverEnter.height / 2);
   };
-  let clearGameOver = () => {
-    GOcontext.clearRect(0, 0, canvas.width, canvas.height);
-    RTcontext.clearRect(0, 0, canvas.width, canvas.height);
+  let clearGameOvercanvas = () => {
+    GOcontext.clearRect(0, 0, GameOverCanvas.width, GameOverCanvas.height);
+    RTcontext.clearRect(0, 0, GameOverEnter.width, GameOverEnter.height);
   };
 
   
   let draw = () => {
-    if(gameStart){
-      drawStart();
-    }
+        if(gameStart){
+          drawStart();
+        }
         if(!gameStart){
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           drawBackground();
@@ -405,27 +425,29 @@ class Tetris {
     const key = event.key;
 
     if(gameStart){
-      if (key === "Enter") {
+      if (key === "Enter"){
+        resetVars();
         clearStartcanvas();
         gameStart = false;
       }
     }
 
     if(gameOver){
-      if (key === "Enter") {
+      if (key === "Enter"){
         resetVars();
-        clearGameOver();
-        gameStart = false;
+        clearGameOvercanvas();
       }
-
     }
-    if (key === "ArrowLeft") currentShape.moveLeft();
-    else if (key === "ArrowUp") currentShape.changeRotation();
-    else if (key === "ArrowRight") currentShape.moveRight();
-    else if (key === "ArrowDown") currentShape.moveBottom();
+
+    if(!gameOver){
+      if (key === "ArrowLeft") currentShape.moveLeft();
+      else if (key === "ArrowUp") currentShape.changeRotation();
+      else if (key === "ArrowRight") currentShape.moveRight();
+      else if (key === "ArrowDown") currentShape.moveBottom();
+    }
   });
 
 
   
   resetVars();
-  gameLoop();
+  requestAnimationFrame(gameLoop);

@@ -9,6 +9,20 @@ var newText = heading.innerHTML.replace('V', '<span style="-webkit-text-fill-col
 heading.innerHTML = newText;
 
 
+var WLS = document.getElementById("WLS");
+
+WLS.addEventListener("click", function() {
+    console.log("Button clicked");
+    window.open("https://github.com/Gabrax", "_blank");
+});
+
+var AV = document.getElementById("AV");
+
+AV.addEventListener("click", function() {
+    console.log("Button clicked");
+    window.open("https://github.com/Gabrax/OpenGL_project", "_blank");
+});
+
 function scrolltoTop(){
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
@@ -22,7 +36,7 @@ const observer = new IntersectionObserver((entries) => {
       }
   });
 }, {
-  threshold: 0.1 // Adjust threshold as needed
+  threshold: 0.1 
 });
 
 const hiddenElements = document.querySelectorAll('.hidden');

@@ -77,10 +77,43 @@ class Tetris {
         score += 1;
       }
     }
+
+    moveLeftAndDown() {
+      if (this.checkLeft() && this.checkBottom()) {
+        this.x -= 1;
+        this.y += 1;
+        score += 1;
+      }
+    }
+    
+    moveRightAndDown() {
+      if (this.checkRight() && this.checkBottom()) {
+        this.x += 1;
+        this.y += 1;
+        score += 1;
+      }
+    }
+
+    hardDrop() {
+      // Move the tetromino downwards repeatedly until it cannot move further
+      const interval = setInterval(() => {
+        if (!this.checkBottom()) {
+          clearInterval(interval); // Stop the interval when the tetromino cannot move further
+          return;
+        }
+        this.y += 1; // Move the tetromino down
+        score += 20; // Adjust score as needed
+      }, 5); // Interval of 5 milliseconds 
+    }
+    
     changeRotation() {
+      // Copy the current template to a temporary template
       let tempTemplate = [];
-      for (let i = 0; i < this.template.length; i++)
+      for (let i = 0; i < this.template.length; i++) {
         tempTemplate[i] = this.template[i].slice();
+      }
+    
+      // Rotate the shape
       let n = this.template.length;
       for (let layer = 0; layer < n / 2; layer++) {
         let first = layer;
@@ -89,32 +122,33 @@ class Tetris {
           let offset = i - first;
           let top = this.template[first][i];
           this.template[first][i] = this.template[i][last]; // top = right
-          this.template[i][last] = this.template[last][last - offset]; //right = bottom
-          this.template[last][last - offset] =
-            this.template[last - offset][first];
-          //bottom = left
+          this.template[i][last] = this.template[last][last - offset]; // right = bottom
+          this.template[last][last - offset] = this.template[last - offset][first]; // bottom = left
           this.template[last - offset][first] = top; // left = top
         }
       }
-  
+    
+      // Check for collisions with existing shapes
       for (let i = 0; i < this.template.length; i++) {
         for (let j = 0; j < this.template.length; j++) {
           if (this.template[i][j] == 0) continue;
           let realX = i + this.getTruncedPosition().x;
           let realY = j + this.getTruncedPosition().y;
-          if (
-            realX < 0 ||
-            realX >= squareCountX ||
-            realY < 0 ||
-            realY >= squareCountY
-          ) {
+          // Check if the rotated shape would collide with existing shapes
+          if (realX < 0 || realX >= squareCountX || realY >= squareCountY || gameMap[realY][realX].imageX != -1) {
+            // If collision detected, revert to the original template and return false
             this.template = tempTemplate;
             return false;
           }
         }
       }
+    
+      // If no collision detected, return true
+      return true;
     }
+
   }
+
   
   const imageSquareSize = 24;
   const size = 40;
@@ -187,7 +221,7 @@ class Tetris {
   let initialTwoDArr;
   let whiteLineThickness = 4;
   const framePerSecond = 60;
-  const gameSpeed = 1;
+  const gameSpeed = 3;
   
 
   let lastUpdateTime = 0;
@@ -444,9 +478,43 @@ let gameLoop = (timestamp) => {
       else if (key === "ArrowUp") currentShape.changeRotation();
       else if (key === "ArrowRight") currentShape.moveRight();
       else if (key === "ArrowDown") currentShape.moveBottom();
+      else if (key === " ") currentShape.hardDrop();
+      //else if (key === "ArrowRight" && key === "ArrowDown") currentShape.moveRightAndDown();
     }
   });
 
+  let leftPressed = false;
+  let downPressed = false;
+  let rightPressed = false;
+
+window.addEventListener("keydown", (event) => {
+  const key = event.key;
+  if (key === "ArrowLeft") {
+    leftPressed = true;
+  } else if (key === "ArrowRight") {
+    rightPressed = true;
+  } else if (key === "ArrowDown") {
+    downPressed = true;
+  }
+
+  // Handle diagonal movement
+  if (leftPressed && downPressed) {
+    currentShape.moveLeftAndDown();
+  } else if (rightPressed && downPressed) {
+    currentShape.moveRightAndDown();
+  }
+});
+
+window.addEventListener("keyup", (event) => {
+  const key = event.key;
+  if (key === "ArrowLeft") {
+    leftPressed = false;
+  } else if (key === "ArrowRight") {
+    rightPressed = false;
+  } else if (key === "ArrowDown") {
+    downPressed = false;
+  }
+});
 
   
   resetVars();

@@ -11,11 +11,13 @@
 
 .mainCanvas {
   position: absolute;
-  top: 10%;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 25px);
-  width: 350px;
-  height: auto;
+  margin-top: -346px; 
+  margin-left: -173px; 
+  height: 700px;
+  width: 348px;
+  align-items: center;
 }
 
 .MapBorder {

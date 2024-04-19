@@ -295,6 +295,18 @@ li {
     transition-delay: 1000ms;
 }
 
+.logo:nth-child(5){
+    transition-delay: 1200ms;
+}
+
+.logo:nth-child(6){
+    transition-delay: 1400ms;
+}
+
+.logo:nth-child(7){
+    transition-delay: 1600ms;
+}
+
 
 
 .vol{

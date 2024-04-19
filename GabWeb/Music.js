@@ -1,3 +1,4 @@
+
 const vertexShader = `
     varying vec2 vUv;
     void main() {
@@ -179,21 +180,21 @@ const image = document.getElementById('cover'),
 document.getElementById("volumeControl").addEventListener("input", setVolume);
 const songs = [
   {
-    path: 'Res/Music/Nujabes - No way back.mp3',
+    path: '/Music/Nujabes-Nowayback.mp3',
     displayName: 'No way back',
-    cover: 'Res/Music/nujabes-departure.jpg',
+    cover: '/Music/nujabes-departure.jpg',
     artist: 'Nujabes',
   },
   {
-    path: 'Res/Music/[dko] - fnk.mp3',
+    path: '/Music/[dko]-fnk.mp3',
     displayName: '[dko] - fnk',
-    cover: 'Res/Music/dko - fnk.png',
+    cover: '/Music/dko-fnk.png',
     artist: 'Lush Loops',
   },
   {
-    path: 'Res/Music/ODESZA - We Were Young.mp3',
+    path: '/Music/ODESZA-WeWereYoung.mp3',
     displayName: 'We Were Young',
-    cover: 'Res/Music/odesza-wewereyoung.png',
+    cover: '/Music/odesza-wewereyoung.png',
     artist: 'ODESZA',
   },
 ]

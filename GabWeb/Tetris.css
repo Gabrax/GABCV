@@ -32,6 +32,18 @@
   z-index: -1;
   animation: fade-up 2s;
 }
+.Controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -350px; 
+  margin-left: -450px; 
+  height: 700px;
+  width: 400px;
+  align-items: center;
+  z-index: -1;
+  animation: fade-up 2s;
+}
 
 .secondCanvas {
   position: absolute;

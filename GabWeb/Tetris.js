@@ -106,7 +106,7 @@ class Tetris {
       }, 5); // Interval of 5 milliseconds 
     }
     
-    changeRotation() {
+    changeRotationRight() {
       // Copy the current template to a temporary template
       let tempTemplate = [];
       for (let i = 0; i < this.template.length; i++) {
@@ -125,6 +125,47 @@ class Tetris {
           this.template[i][last] = this.template[last][last - offset]; // right = bottom
           this.template[last][last - offset] = this.template[last - offset][first]; // bottom = left
           this.template[last - offset][first] = top; // left = top
+        }
+      }
+    
+      // Check for collisions with existing shapes
+      for (let i = 0; i < this.template.length; i++) {
+        for (let j = 0; j < this.template.length; j++) {
+          if (this.template[i][j] == 0) continue;
+          let realX = i + this.getTruncedPosition().x;
+          let realY = j + this.getTruncedPosition().y;
+          // Check if the rotated shape would collide with existing shapes
+          if (realX < 0 || realX >= squareCountX || realY >= squareCountY || gameMap[realY][realX].imageX != -1) {
+            // If collision detected, revert to the original template and return false
+            this.template = tempTemplate;
+            return false;
+          }
+        }
+      }
+    
+      // If no collision detected, return true
+      return true;
+    }
+
+    changeRotationLeft() {
+      // Copy the current template to a temporary template
+      let tempTemplate = [];
+      for (let i = 0; i < this.template.length; i++) {
+        tempTemplate[i] = this.template[i].slice();
+      }
+    
+      // Rotate the shape counterclockwise
+      let n = this.template.length;
+      for (let layer = 0; layer < n / 2; layer++) {
+        let first = layer;
+        let last = n - 1 - layer;
+        for (let i = first; i < last; i++) {
+          let offset = i - first;
+          let top = this.template[first][i];
+          this.template[first][i] = this.template[last - offset][first]; // top = left
+          this.template[last - offset][first] = this.template[last][last - offset]; // left = bottom
+          this.template[last][last - offset] = this.template[i][last]; // bottom = right
+          this.template[i][last] = top; // right = top
         }
       }
     
@@ -472,10 +513,11 @@ let gameLoop = (timestamp) => {
         clearGameOvercanvas();
       }
     }
-
+    
     if(!gameOver){
       if (key === "ArrowLeft") currentShape.moveLeft();
-      else if (key === "ArrowUp") currentShape.changeRotation();
+      else if (key === "e" || key === "E") currentShape.changeRotationRight();
+      else if (key === "q" || key === "Q") currentShape.changeRotationLeft();
       else if (key === "ArrowRight") currentShape.moveRight();
       else if (key === "ArrowDown") currentShape.moveBottom();
       else if (key === " ") currentShape.hardDrop();

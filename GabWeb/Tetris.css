@@ -9,6 +9,7 @@
   box-sizing: border-box;
 }
 
+
 .mainCanvas {
   position: absolute;
   top: 50%;
@@ -247,3 +248,30 @@ nav{
     }
   }
   /*Animations*/
+
+  /* For Tablet */
+@media screen and (min-width: 750px) {
+  .mainCanvas {
+  margin-top: -346px; 
+  margin-left: -173px; 
+  }
+
+  .MapBorder {
+    margin-top: -374px; 
+    margin-left: -206px; 
+  }
+}
+
+/* For Mobile */
+@media screen and (max-width: 600px) {
+  .mainCanvas {
+  margin-top: -180px; 
+  margin-left: -96px;
+  }
+
+  .MapBorder { 
+  margin-top: -214px; 
+  margin-left: -210px;
+  }
+}
+

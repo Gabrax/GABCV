@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="Music.css">
   <link rel="shortcut icon" type="image/x-icon" href="/Music/musicFavicon.ico"/>
 
-  <script type="module" src="Header-func.js" defer></script>
+  <script type="module" src="../shared/header_shared.ts" defer></script>
   <title>GabCV | Music</title>
 
 </head>
@@ -20,7 +20,7 @@
           <ul class="nav-links">
               <li class="link"><a href="/index.html">Home</a></li>
               <li class="link"><a href="#">Music</a></li>
-              <li class="link"><a href="/Tetris.html">Tetris</a></li>
+              <li class="link"><a href="/tetris/Tetris.html">Tetris</a></li>
               <button class="btn" id="GH"><i class="fab fa-github"></i></button>
               <button class="btn" id="LI"><i class="fab fa-linkedin"></i></button>
           </ul>       
@@ -53,7 +53,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.3.0/simplex-noise.min.js"></script>
-  <script type="module" src="Music.js"></script>
+  <script type="module" src="Music.ts"></script>
   
   <div id="header"><label for="audio" id="label">Select file</label><input type="file" id="audio" accept=".mp3"></div>
   <div id="visualiser"></div>

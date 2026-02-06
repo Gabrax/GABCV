@@ -1,0 +1,20 @@
+.header{
+    position: fixed;
+    display: flex;
+    top: 0;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    margin: auto;
+    padding: 1px 20px;
+    background-color: #000000;
+    z-index: 1000; /* Adjust as needed */
+}
+
+.header H1{
+    font-size: 36px;
+    -webkit-text-fill-color:transparent;
+    -webkit-text-stroke: 1px #ef5f5f;
+    animation: fade-down 2s;
+}

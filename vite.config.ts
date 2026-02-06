@@ -8,8 +8,8 @@ export default {
         rollupOptions: {
             input: {
                 main: path.resolve(__dirname,'index.html'),
-                music: path.resolve(__dirname,'Music.html'),
-                tetris: path.resolve(__dirname,'Tetris.html')
+                music: path.resolve(__dirname,'music_visualizer/Music.html'),
+                tetris: path.resolve(__dirname,'tetris/Tetris.html')
             },
         }
     },

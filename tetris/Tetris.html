@@ -9,24 +9,14 @@
   <link rel="stylesheet" href="Tetris.css">
   <link rel="shortcut icon" type="image/x-icon" href="/Tetris/Tetrislogo.ico"/>
 
-  <script type="module" src="../shared/header_shared.ts" defer></script>
   <script type="module" src="Tetris.ts" defer></script>
+  <script type="module" src="../shared/header_shared.ts" defer></script>
   <title>GabCV | Tetris</title>
-</head>
 
+</head>
     <body>
-      <header class="header">
-        <nav>
-            <H1>CV</H1>
-            <ul class="nav-links">
-                <li class="link"><a href="/index.html">Home</a></li>
-                <li class="link"><a href="/music_visualizer/Music.html">Music</a></li>
-                <li class="link"><a href="#">Tetris</a></li>
-                <button class="btn" id="GH"><i class="fab fa-github"></i></button>
-                <button class="btn" id="LI"><i class="fab fa-linkedin"></i></button>
-            </ul>       
-        </nav>
-      </header> 
+
+      <div id="header"></div>
 
     <canvas class="GameStartCanvas" id="GTcanvas" width="400" height="800"></canvas>
     <canvas class="GameEnterCanvas" id="GEcanvas" width="400" height="800"></canvas>

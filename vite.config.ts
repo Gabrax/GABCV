@@ -1,6 +1,6 @@
 import { build, defineConfig } from "vite";
 import path from 'path';
-// vite.config.js
+
 export default {
     build: {
         assetsInlineLimit: 0,
@@ -8,8 +8,7 @@ export default {
         rollupOptions: {
             input: {
                 main: path.resolve(__dirname,'index.html'),
-                music: path.resolve(__dirname,'music_visualizer/Music.html'),
-                tetris: path.resolve(__dirname,'tetris/Tetris.html')
+                visualizer: path.resolve(__dirname,'music_visualizer/music_visualizer.html'),
             },
         }
     },

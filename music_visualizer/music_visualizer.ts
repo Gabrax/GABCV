@@ -118,12 +118,11 @@ export class MusicVisualizerPlayer
   private initThree()
   {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x000000);
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 80;
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.visualizerContainer.appendChild(this.renderer.domElement);
 

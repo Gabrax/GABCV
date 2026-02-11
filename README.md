@@ -32,7 +32,8 @@
 <div align="center">
 
 <p>
-<a href="https://vite.dev/">Vite</a> •
+<a href="https://vite.dev/">vite</a> •
+<a href="https://cdnjs.com/libraries/simplex-noise/2.3.0">simplex-noise</a> •
 <a href="https://threejs.org/">three.js</a>
 </p>
 

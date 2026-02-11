@@ -76,7 +76,7 @@
       align-items: center;
       color: white;
       z-index: 5;
-      pointer-events: auto;
+      pointer-events: none;
       opacity: 0;
       transition: opacity 0.6s ease;
     }
@@ -117,6 +117,8 @@
 import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
 import { MusicVisualizerPlayer } from "/music_visualizer/music_visualizer.ts";
+import { Tetris } from "/tetris/tetrisGame.ts";
+let game;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020617);
@@ -170,9 +172,9 @@ animate();
 const pages =
 {
   home: ``,
-  viewer: ``,
+  viewer: `/model_viewer/model_viewer.html`,
   visualizer: `/music_visualizer/music_visualizer.html`,
-  tetris: ``
+  tetris: `/tetris/tetrisGame.html`
 };
 
 const content = document.getElementById("content");
@@ -193,12 +195,65 @@ async function loadPage(name) {
       const html = await res.text();
       content.innerHTML = html;
       content.classList.add("visible");
-      const musicApp = new MusicVisualizerPlayer();
+
+      if (name === "visualizer")
+      {
+        const musicApp = new MusicVisualizerPlayer();
+      }
+      else if(name === "tetris") {
+        game = new Tetris(
+          10,
+          20,
+          40
+        );
+      } else {
+        game = undefined;
+      }
     } catch (err) {
       content.innerHTML = "<p>Error loading page</p>";
     }
   }, 300);
 }
+
+window.addEventListener("keydown", e => {
+
+  switch (e.key) {
+    case "ArrowLeft":
+      game.move(-1);
+      console.log("left");
+      break;
+
+    case "ArrowRight":
+      game.move(1);
+      break;
+
+    case "ArrowDown":
+      game.hardDrop();
+      break;
+
+    case "ArrowUp":
+      game.rotate();
+      break;
+
+    case " ":
+      game.hardDrop();
+      break;
+    case "Enter":
+      game.reset();
+      break;
+  }
+});
+
+window.addEventListener("resize", () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
 
 links.forEach(link =>
 {

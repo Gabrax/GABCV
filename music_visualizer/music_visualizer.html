@@ -16,14 +16,10 @@
   width: 300px;
   align-items: center;
   border-radius: 20px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
   transition: all 0.5s ease;
   animation: fade-up 2s;
   pointer-events: auto;
-}
-
-.container:hover{
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
 }
 
 .container h2{
@@ -134,10 +130,6 @@
   height: 0;
   width: 0;
   opacity: 0;
-  box-shadow: 0 5px 30px 5px rgba(0, 0, 0, 0.5);
-}
-
-.player-img:hover img{
   box-shadow: 0 5px 30px 5px rgba(0, 0, 0, 0.8);
 }
 
@@ -152,30 +144,42 @@ input {
   display: none;
 }
 
-label{
-  border: 1px solid grey;
-  border-radius: 10px;
-  padding: 5px 10px;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: rgb(214, 214, 214);
+.input-zone {
   position: absolute;
-  margin-top: -15px; /* Half of the container's height */
-  margin-left: -45px; /* Half of the container's width */
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 10px;
   z-index: 1000;
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding: 10px 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(214, 214, 214);
   animation: fade-up 2s;
+  cursor: pointer;
+  user-select: none;
   pointer-events: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-label:hover{
-  background-color: rgb(214, 214, 214);
-  cursor: pointer;
+.input-zone i {
+  pointer-events: none;
+  margin-left: 4px;
+  margin-right: 4px;
+  font-size: 1.0em; /* make icon slightly larger */
+}
+
+.input-zone:hover {
+  background-color: rgb(200, 200, 200);
 }
 
 #visualiser {
   cursor: pointer;
-  animation: fade-up 10s;
 }
 
 #visualiser {
@@ -206,7 +210,7 @@ label:hover{
     </div>
   </div>
 
-  <div id="header"><label for="audio" id="label">Select file</label><input type="file" id="audio" accept=".mp3"></div>
+  <div class="input-zone" id="drop-zone"><i class="fa-solid fa-file-audio"></i></div>
   <div id="visualiser"></div>
 </body>
 

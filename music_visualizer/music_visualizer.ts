@@ -22,8 +22,8 @@ interface Song
 {
   path: string;
   displayName: string;
-  cover: string;
-  artist: string;
+  cover?: string;
+  artist?: string;
 }
 
 export class MusicVisualizerPlayer
@@ -97,8 +97,24 @@ export class MusicVisualizerPlayer
 
     this.initAudio();
     this.initThree();
+    this.initDragAndDrop();
     this.bindUI();
     this.loadTrack(this.index);
+
+    //const urlInput = document.getElementById('url-zone') as HTMLInputElement;
+    //urlInput.addEventListener('click', () =>
+    //{
+    //  const url = urlInput.value.trim();
+    //  if (!url) return;
+    //
+    //  this.addAndPlaySong({
+    //    path: url,
+    //    displayName: 'External stream',
+    //    artist: 'URL'
+    //  });
+    //
+    //  urlInput.value = '';
+    //});
 
     this.animate();
   }
@@ -148,6 +164,45 @@ export class MusicVisualizerPlayer
     window.addEventListener('resize', () => this.onResize());
   }
 
+  private initDragAndDrop() {
+    const dropZone = document.getElementById('drop-zone')!;
+    
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('hover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('hover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('hover');
+
+      const files = e.dataTransfer?.files;
+      if (!files || files.length === 0) return;
+
+      const file = files[0];
+      if (!file.type.startsWith('audio')) {
+        alert('Please drop a valid audio file');
+        return;
+      }
+
+      const audioUrl = URL.createObjectURL(file);
+
+      this.addAndPlaySong({
+        path: audioUrl,
+        displayName: file.name.replace(/\.[^/.]+$/, ''),
+        cover: '/Music/itunes_icon.jpg',
+        artist: 'Local file'
+      });
+    });
+
+    window.addEventListener('dragover', (e) => e.preventDefault());
+    window.addEventListener('drop', (e) => e.preventDefault());
+  }
+
   private bindUI()
   {
     this.playBtn.addEventListener('click', () => this.togglePlay());
@@ -171,6 +226,16 @@ export class MusicVisualizerPlayer
       this.isPlaying = false;
       this. playBtn.classList.replace('fa-pause','fa-play');
     }
+  }
+
+  public addAndPlaySong(song: Song)
+  {
+    this.tracks.push(song);
+    this.index = this.tracks.length - 1;
+    this.loadTrack(this.index);
+    this.audio.play();
+    this.isPlaying = true;
+    this.playBtn.classList.replace('fa-play','fa-pause');
   }
 
   private changeTrack(dir: number)

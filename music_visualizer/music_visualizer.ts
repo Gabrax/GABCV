@@ -101,21 +101,6 @@ export class MusicVisualizerPlayer
     this.bindUI();
     this.loadTrack(this.index);
 
-    //const urlInput = document.getElementById('url-zone') as HTMLInputElement;
-    //urlInput.addEventListener('click', () =>
-    //{
-    //  const url = urlInput.value.trim();
-    //  if (!url) return;
-    //
-    //  this.addAndPlaySong({
-    //    path: url,
-    //    displayName: 'External stream',
-    //    artist: 'URL'
-    //  });
-    //
-    //  urlInput.value = '';
-    //});
-
     this.animate();
   }
 

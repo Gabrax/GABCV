@@ -5,6 +5,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
+.container h2{
+  font-size: 25 px;
+  text-align: center;
+  margin: -10px 0 0;
+}
+.container h3{
+  font-size: 15 px;
+  font-weight: 400;
+  text-align: center;
+  margin: 0px 0 0;
+}
+
 .mainCanvas {
   position: absolute;
   top: 50%;
@@ -102,15 +114,6 @@
 
 <body>
 
-<canvas class="GameStartCanvas" id="GTcanvas" width="400" height="800"></canvas>
-<canvas class="GameEnterCanvas" id="GEcanvas" width="400" height="800"></canvas>
-<canvas class="mainCanvas" id="canvas" width="400" height="800"></canvas>
-<canvas class="GameOverCanvas" id="GOcanvas" width="400" height="800"></canvas>
-<canvas class="GameOverReset" id="RTcanvas" width="400" height="800"></canvas>
-<canvas class="secondCanvas" id="nextShapeCanvas" width="200" height="200" style="position: absolute; top: 10"></canvas>
-<canvas class="thirdCanvas" id="scoreCanvas" width="200" height="200" style="position: absolute; top: 220"></canvas>
-<div class="MapBorder"><img src="/Tetris_tex/TetrisMapBorder.png"/></div>
-<div class="Controls"><img src="/Tetris_tex/controlspong.png" width="250" height="200"/></div>
-<img id="image" src="/Tetris_tex/tetris_cubes.png" style="display: none" />
+<div id="container"></div>
 
 </body>

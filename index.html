@@ -242,6 +242,17 @@ window.addEventListener("keydown", e => {
       game.reset();
       break;
   }
+
+  if (e.code === "Enter" && !game.started)
+  {
+    game.started = true;
+    game.pressEnterText.setVisible(false);
+  }
+});
+
+window.addEventListener("keyup", e =>
+{
+  if (e.code === "Space") game.hardDropLocked = false;
 });
 
 window.addEventListener("resize", () => {

@@ -1,5 +1,3 @@
-//import "https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js";
-
 import * as THREE from "three";
 
 const vertexShader = `
@@ -129,18 +127,14 @@ class HUDText
   texture: THREE.CanvasTexture;
   sprite: THREE.Sprite;
 
-  constructor(
-    text: string,
-    fontSize = 48,
-    width = 512,
-    height = 128
-  ) {
+  constructor(text: string, fontSize: number = 48, width: number = 512, height: number = 128)
+  {
     this.canvas = document.createElement("canvas");
     this.canvas.width = width;
     this.canvas.height = height;
 
     this.ctx = this.canvas.getContext("2d")!;
-    this.ctx.font = `${fontSize}px Arial`;
+    this.ctx.font = `bold ${fontSize}px monospace`;
     this.ctx.fillStyle = "white";
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
@@ -187,6 +181,11 @@ export class Tetris
   private figureMesh!: THREE.InstancedMesh;
   private ghostMesh!: THREE.InstancedMesh;
   private boardFrame = new THREE.Group();
+  private nextShapeFrame = new THREE.Group();
+  private nextMesh!: THREE.InstancedMesh;
+  private maxPreviewInstances = 16;
+  private previewOffsetX!: number;
+  private previewOffsetY!: number;
 
   private maxBoardInstances: number;
   private maxShapeInstances = 16;
@@ -216,24 +215,17 @@ export class Tetris
     this.maxBoardInstances = width * height;
 
     this.scoreText = new HUDText("SCORE: 0", 42);
-    this.scoreText.sprite.position.set(
-      this.board.width + 4,
-      -2,
-      0
-    );
+    this.scoreText.sprite.position.set(this.board.width + 4, -10, 0);
     this.scene.add(this.scoreText.sprite);
 
-    this.pressEnterText = new HUDText("PRESS ENTER TO PLAY", 48);
-    this.pressEnterText.sprite.position.set(
-      this.board.width / 2,
-      -this.board.height / 2,
-      5
-    );
+    this.pressEnterText = new HUDText("PRESS ENTER TO PLAY", 40);
+    this.pressEnterText.sprite.position.set((this.board.width / 2) - 0.5,-this.board.height / 2,2);
     this.scene.add(this.pressEnterText.sprite);
 
     this.spawn();
     this.initThree();
 
+    this.updateListener();
     requestAnimationFrame(this.loop);
   }
 
@@ -260,6 +252,7 @@ export class Tetris
       transparent: true,
       opacity: 0.25
     });
+    const previewMaterial = new THREE.MeshStandardMaterial({ color: "lime" });
 
     this.boardMesh = new THREE.InstancedMesh(
       this.geometry,
@@ -273,6 +266,12 @@ export class Tetris
       this.maxShapeInstances
     );
 
+    this.nextMesh = new THREE.InstancedMesh(
+      this.geometry,
+      previewMaterial,
+      this.maxPreviewInstances
+    );
+
     this.ghostMesh = new THREE.InstancedMesh(
       this.geometry,
       ghostMaterial,
@@ -281,6 +280,7 @@ export class Tetris
 
     this.scene.add(this.boardMesh);
     this.scene.add(this.figureMesh);
+    this.scene.add(this.nextMesh);
     this.scene.add(this.ghostMesh);
 
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -288,7 +288,11 @@ export class Tetris
     light.position.set(10, 20, 20);
     this.scene.add(light);
 
+    this.previewOffsetX = this.board.width + 4;
+    this.previewOffsetY = -2;
+
     this.createBoardFrame();
+    this.createNextShapeFrame();
 
     window.addEventListener("resize", () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -337,6 +341,49 @@ export class Tetris
     this.scene.add(this.boardFrame);
   }
 
+  private createNextShapeFrame()
+  {
+    const size = 6;
+    const thickness = 0.15;
+    const depth = 0.3;
+
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xfffff
+    });
+
+    const centerX = this.previewOffsetX;
+    const centerY = this.previewOffsetY - 4;
+
+    const half = size / 2;
+
+    const top = new THREE.Mesh(
+      new THREE.BoxGeometry(size, thickness, depth),
+      material
+    );
+    top.position.set(centerX, centerY + half, 0);
+
+    const bottom = new THREE.Mesh(
+      new THREE.BoxGeometry(size, thickness, depth),
+      material
+    );
+    bottom.position.set(centerX, centerY - half, 0);
+
+    const left = new THREE.Mesh(
+      new THREE.BoxGeometry(thickness, size, depth),
+      material
+    );
+    left.position.set(centerX - half, centerY, 0);
+
+    const right = new THREE.Mesh(
+      new THREE.BoxGeometry(thickness, size, depth),
+      material
+    );
+    right.position.set(centerX + half, centerY, 0);
+
+    this.nextShapeFrame.add(top, bottom, left, right);
+    this.scene.add(this.nextShapeFrame);
+  }
+
   private randomShape(): Shape
   {
     const t = SHAPES[Math.floor(Math.random() * SHAPES.length)];
@@ -356,6 +403,46 @@ export class Tetris
     this.dropProgress = 0;
 
     if (!this.board.isValid(this.current)) this.gameOver = true;
+  }
+
+  private updateListener()
+  {
+    window.addEventListener("keydown", e => {
+
+      switch (e.key) {
+        case "ArrowLeft":
+          this.move(-1);
+          break;
+
+        case "ArrowRight":
+          this.move(1);
+          break;
+
+        case "ArrowDown":
+          this.softDrop();
+          break;
+
+        case "ArrowUp":
+          this.rotate();
+          break;
+
+        case " ":
+          this.hardDrop();
+          break;
+      }
+
+      if (e.code === "Enter" && (!this.started || this.gameOver))
+      {
+        this.reset();
+        this.started = true;
+        this.pressEnterText.setVisible(false);
+      }
+    });
+
+    window.addEventListener("keyup", e =>
+    {
+      if (e.code === "Space") this.hardDropLocked = false;
+    });
   }
 
   private update(time: number)
@@ -384,6 +471,43 @@ export class Tetris
                   (this.current.y - this.previousY) * this.dropProgress;
   }
 
+  private renderNext()
+  {
+    if (!this.next) return;
+
+    let i = 0;
+
+    const shape = this.next.shape;
+
+    const shapeWidth = shape[0].length;
+    const shapeHeight = shape.length;
+
+    const centerX = this.previewOffsetX;
+    const centerY = this.previewOffsetY - 4;
+
+    const offsetX = centerX - shapeWidth / 2 + 0.5;
+    const offsetY = centerY + shapeHeight / 2 - 0.5;
+
+    for (let y = 0; y < shape.length; y++)
+    {
+      for (let x = 0; x < shape[y].length; x++)
+      {
+        if (shape[y][x])
+        {
+          this.tempMatrix.makeTranslation(
+            offsetX + x,
+            offsetY - y,
+            0
+          );
+          this.nextMesh.setMatrixAt(i++, this.tempMatrix);
+        }
+      }
+    }
+
+    this.nextMesh.count = i;
+    this.nextMesh.instanceMatrix.needsUpdate = true;
+  }
+
   private renderGhost()
   {
     let ghostY = this.current.y;
@@ -402,7 +526,7 @@ export class Tetris
           this.tempMatrix.makeTranslation(
             this.current.x + x,
             -(ghostY + y),
-            -0.2 // lekko w głąb
+            -0.2 
           );
           this.ghostMesh.setMatrixAt(i++, this.tempMatrix);
         }
@@ -453,7 +577,7 @@ export class Tetris
 
   private loop = (time: number) =>
   {
-    if (!this.started)
+    if (!this.started || this.gameOver)
     {
       this.blinkTimer += 0.016;
       this.pressEnterText.setVisible(
@@ -467,12 +591,14 @@ export class Tetris
       this.renderBoard();
       this.renderGhost();
       this.renderShape();
+      this.renderNext();
     }
     else
     {
       this.boardMesh.count = 0;
-      this.figureMesh.count = 0;
       this.ghostMesh.count = 0;
+      this.figureMesh.count = 0;
+      this.nextMesh.count = 0;
     }
 
     this.scoreText.setText(`SCORE: ${this.score}`);
@@ -524,8 +650,8 @@ export class Tetris
   {
     this.board = new Board(this.board.width, this.board.height);
     this.score = 0;
+    this.blinkTimer = 0;
     this.gameOver = false;
     this.spawn();
-    requestAnimationFrame(this.loop);
   }
 }

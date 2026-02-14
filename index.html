@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="eng">
 <head>
   <meta charset="UTF-8" />
-  <title>GABWEBGL</title>
+  <title>GABWEBGFX</title>
   <link rel="shortcut icon" type="image/x-icon" href="/Home/homeFavicon.ico" />
 
   <style>
@@ -118,6 +118,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
 import { MusicVisualizerPlayer } from "/music_visualizer/music_visualizer.ts";
 import { Tetris } from "/tetris/tetrisGame.ts";
+let musicApp;
 let game;
 
 const scene = new THREE.Scene();
@@ -196,64 +197,19 @@ async function loadPage(name) {
       content.innerHTML = html;
       content.classList.add("visible");
 
-      if (name === "visualizer")
+      if (name === "visualizer") musicApp = new MusicVisualizerPlayer();
+      else if(name === "tetris") game = new Tetris(10,20,40);
+      else
       {
-        const musicApp = new MusicVisualizerPlayer();
-      }
-      else if(name === "tetris") {
-        game = new Tetris(
-          10,
-          20,
-          40
-        );
-      } else {
+        musicApp = undefined;
         game = undefined;
       }
+
     } catch (err) {
       content.innerHTML = "<p>Error loading page</p>";
     }
   }, 300);
 }
-
-window.addEventListener("keydown", e => {
-
-  switch (e.key) {
-    case "ArrowLeft":
-      game.move(-1);
-      console.log("left");
-      break;
-
-    case "ArrowRight":
-      game.move(1);
-      break;
-
-    case "ArrowDown":
-      game.softDrop();
-      break;
-
-    case "ArrowUp":
-      game.rotate();
-      break;
-
-    case " ":
-      game.hardDrop();
-      break;
-    case "Enter":
-      game.reset();
-      break;
-  }
-
-  if (e.code === "Enter" && !game.started)
-  {
-    game.started = true;
-    game.pressEnterText.setVisible(false);
-  }
-});
-
-window.addEventListener("keyup", e =>
-{
-  if (e.code === "Space") game.hardDropLocked = false;
-});
 
 window.addEventListener("resize", () => {
   const width = window.innerWidth;

@@ -116,8 +116,10 @@
 <script type="module" lang="ts">
 import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
+import { ModelViewer } from "/model_viewer/model_viewer.ts";
 import { MusicVisualizerPlayer } from "/music_visualizer/music_visualizer.ts";
 import { Tetris } from "/tetris/tetrisGame.ts";
+let viewer;
 let musicApp;
 let game;
 
@@ -196,16 +198,19 @@ async function loadPage(name) {
       const html = await res.text();
       content.innerHTML = html;
       content.classList.add("visible");
-
-      if (name === "visualizer") musicApp = new MusicVisualizerPlayer();
+        
+      if (name === "viewer") viewer = new ModelViewer();
+      else if (name === "visualizer") musicApp = new MusicVisualizerPlayer();
       else if(name === "tetris") game = new Tetris(10,20,40);
       else
       {
+        viewer = undefined;
         musicApp = undefined;
         game = undefined;
       }
 
     } catch (err) {
+      console.log(err);
       content.innerHTML = "<p>Error loading page</p>";
     }
   }, 300);

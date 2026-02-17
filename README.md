@@ -13,7 +13,7 @@
 
 </div>
 
-- Music page, which contains music player with audio visualizer
+https://github.com/user-attachments/assets/58917011-ead4-43b2-9dc8-deb4202c8e03
 
 <div align="center">
   
@@ -21,7 +21,7 @@
 
 </div>
 
-- Tetris page, which has a ready to play Tetris game
+https://github.com/user-attachments/assets/d6479743-de4c-4032-88a4-847e2f3fbc56
 
 <div align="center">
   

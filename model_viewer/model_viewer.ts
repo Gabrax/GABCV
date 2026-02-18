@@ -11,7 +11,7 @@ class HUDText
   texture: THREE.CanvasTexture;
   sprite: THREE.Sprite;
 
-  constructor(text: string, fontSize: number = 48, width: number = 512, height: number = 128)
+  constructor(text: string, fontSize: number = 48, scale: number = 1, width: number = 512, height: number = 128)
   {
     this.canvas = document.createElement("canvas");
     this.canvas.width = width;
@@ -20,8 +20,10 @@ class HUDText
     this.ctx = this.canvas.getContext("2d")!;
     this.ctx.font = `bold ${fontSize}px monospace`;
     this.ctx.fillStyle = "white";
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "middle";
+    //this.ctx.textAlign = "center";
+    //this.ctx.textBaseline = "middle";
+    this.ctx.textAlign = "left";
+    this.ctx.textBaseline = "top";
 
     this.texture = new THREE.CanvasTexture(this.canvas);
     this.texture.minFilter = THREE.LinearFilter;
@@ -32,7 +34,8 @@ class HUDText
     });
 
     this.sprite = new THREE.Sprite(material);
-    this.sprite.scale.set(10, 2.5, 1);
+    const aspect = width / height;
+    this.sprite.scale.set(scale * aspect, scale, 1);
 
     this.setText(text);
   }
@@ -40,7 +43,23 @@ class HUDText
   setText(text: string)
   {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillText(text, this.canvas.width / 2, this.canvas.height / 2);
+
+    const lines = text.split("\n");
+    const lineHeight = 48;
+    const startY = this.canvas.height / 2 - (lines.length - 1) * lineHeight / 2;
+
+    const paddingX = 20;
+    const paddingY = 20;
+
+
+    lines.forEach((line, i) => {
+      this.ctx.fillText(
+        line,
+        paddingX,
+        paddingY + i * lineHeight
+      );
+    });
+
     this.texture.needsUpdate = true;
   }
 
@@ -52,11 +71,16 @@ class HUDText
 
 export class ModelViewer
 {
-  private scene = new THREE.Scene();
   private gltf_loader = new GLTFLoader();
   private obj_loader = new OBJLoader();
+  private mtl_loader = new MTLLoader();
+  private scene = new THREE.Scene();
   private camera!: THREE.PerspectiveCamera;
+  private hud_scene = new THREE.Scene();
+  private hud_camera!: THREE.OrthographicCamera;
   private renderer!: THREE.WebGLRenderer;
+
+  private modelInfoText!: HUDText;
 
   private controls!: OrbitControls;
 
@@ -68,11 +92,8 @@ export class ModelViewer
 
   constructor(width: number, height: number)
   {
-    this.pressEnterText = new HUDText("DROP HERE MODEL FILE", 40);
-    this.pressEnterText.sprite.position.set(0, 0, 0);
-    this.scene.add(this.pressEnterText.sprite);
-
     this.initThree();
+    this.initHUD();
     this.initDragAndDrop();
 
     requestAnimationFrame(this.loop);
@@ -94,6 +115,7 @@ export class ModelViewer
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.autoClear = false;
     container.appendChild(this.renderer.domElement);
 
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -101,7 +123,6 @@ export class ModelViewer
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
     light.position.set(10, 20, 20);
     this.scene.add(light);
-
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
@@ -116,13 +137,60 @@ export class ModelViewer
     this.controls.update();
 
     window.addEventListener("resize", () => {
-      this.camera.aspect = window.innerWidth / window.innerHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      this.camera.aspect = w / h;
       this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this.renderer.setSize(w, h);
+
+      this.hud_camera.left = -w / 2;
+      this.hud_camera.right = w / 2;
+      this.hud_camera.top = h / 2;
+      this.hud_camera.bottom = -h / 2;
+      this.hud_camera.updateProjectionMatrix();
+
+      this.modelInfoText.sprite.position.set(
+        -w / 2 + 320,
+        h / 2 - 500,
+        0
+      );
     });
 
     this.renderer.domElement.style.pointerEvents = 'auto';
     this.renderer.domElement.style.touchAction = 'none';
+  }
+
+  private initHUD()
+  {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    this.hud_camera = new THREE.OrthographicCamera(
+      -w / 2,
+      w / 2,
+      h / 2,
+      -h / 2,
+      -10,
+      10
+    );
+
+    this.hud_camera.position.z = 1;
+
+    this.pressEnterText = new HUDText("DROP MODEL FILE", 48, 60, 800, 150);
+    this.pressEnterText.sprite.position.set(80, 0, 0);
+    this.hud_scene.add(this.pressEnterText.sprite);
+
+    this.modelInfoText = new HUDText("", 28, 700, 600, 2000);
+
+    this.modelInfoText.sprite.position.set(
+      -w / 2 + 320,
+      h / 2 - 500,
+      0
+    );
+
+    this.modelInfoText.setVisible(false);
+    this.hud_scene.add(this.modelInfoText.sprite);
   }
 
   private initDragAndDrop()
@@ -132,60 +200,133 @@ export class ModelViewer
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      dropZone.classList.add('hover');
     });
 
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('hover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
+    dropZone.addEventListener('drop', (e) =>
+    {
       e.preventDefault();
       e.stopPropagation();
-      dropZone.classList.remove('hover');
 
-      const files = e.dataTransfer?.files;
-      if (!files || files.length === 0) return;
+      const files = Array.from(e.dataTransfer?.files ?? []);
+      if (files.length === 0) return;
 
-      const file = files[0];
+      const objFile  = files.find(f => f.name.toLowerCase().endsWith('.obj'));
+      const mtlFile  = files.find(f => f.name.toLowerCase().endsWith('.mtl'));
+      const gltfFile = files.find(f =>
+        f.name.toLowerCase().endsWith('.gltf') ||
+        f.name.toLowerCase().endsWith('.glb')
+      );
 
-      console.log(file);
+      if (gltfFile)
+      {
+        const manager = new THREE.LoadingManager();
 
-      if (!file.name.toLowerCase().endsWith('.obj')) {
-        alert('Please drop a valid .obj file');
+        manager.setURLModifier((url) =>
+        {
+          const filename = url.split('/').pop();
+          const file = files.find(f => f.name === filename);
+          return file ? URL.createObjectURL(file) : url;
+        });
+
+        const loader = new GLTFLoader(manager);
+
+        loader.load(
+          URL.createObjectURL(gltfFile),
+          (gltf) =>
+          {
+            this.onModelLoaded(gltf.scene, gltf.animations);
+          }
+        );
+
         return;
       }
 
-      const reader = new FileReader();
+      if (objFile)
+      {
+        const manager = new THREE.LoadingManager();
 
-      reader.onload = (event) => {
-        const contents = event.target?.result as string;
+        manager.setURLModifier((url) =>
+        {
+          const filename = url.split('/').pop();
+          const file = files.find(f => f.name === filename);
+          return file ? URL.createObjectURL(file) : url;
+        });
 
-        const object = this.obj_loader.parse(contents);
+        const objLoader = new OBJLoader(manager);
+        const mtlLoader = new MTLLoader(manager);
 
-        console.log(object);
+        if (mtlFile)
+        {
+          const mtlURL = URL.createObjectURL(mtlFile);
 
-        if (this.currentModel) {
-          this.scene.remove(this.currentModel);
+          mtlLoader.load(mtlURL, (materials) =>
+          {
+            materials.preload();
+            objLoader.setMaterials(materials);
+
+            objLoader.load(
+              URL.createObjectURL(objFile),
+              (object) =>
+              {
+                this.onModelLoaded(object, []);
+              }
+            );
+          });
+        }
+        else
+        {
+          objLoader.load(
+            URL.createObjectURL(objFile),
+            (object) =>
+            {
+              this.onModelLoaded(object, []);
+            }
+          );
         }
 
-        this.currentModel = object;
+        return;
+      }
 
-        this.centerModel(object);
-
-        this.controls.target.set(0, 0, 0);
-        this.controls.update();
-
-        this.scene.add(object);
-
-        this.pressEnterText.setVisible(false);
-      };
-
-      reader.readAsText(file);
+      alert("Drop OBJ+MTL or GLTF/GLB");
     });
 
-    window.addEventListener('dragover', (e) => e.preventDefault());
-    window.addEventListener('drop', (e) => e.preventDefault());
+    window.addEventListener('dragover', e => e.preventDefault());
+    window.addEventListener('drop', e => e.preventDefault());
+  }
+
+  private getModelInfo(object: THREE.Object3D)
+  {
+    let vertices = 0;
+    let indices = 0;
+    let faces = 0;
+    const meshNames: string[] = [];
+
+    object.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        const geo = mesh.geometry;
+
+        meshNames.push(mesh.name || "(unnamed)");
+
+        if (geo.attributes.position) {
+          vertices += geo.attributes.position.count;
+        }
+
+        if (geo.index) {
+          indices += geo.index.count;
+          faces += geo.index.count / 3;
+        } else {
+          faces += geo.attributes.position.count / 3;
+        }
+      }
+    });
+
+    return {
+      vertices,
+      indices,
+      faces,
+      meshNames
+    };
   }
 
   private centerModel(object: THREE.Object3D)
@@ -206,10 +347,54 @@ export class ModelViewer
     this.camera.lookAt(0, 0, 0);
   }
 
+  private onModelLoaded(object: THREE.Object3D,animations: THREE.AnimationClip[] = [])
+  {
+    if (this.currentModel)
+      this.scene.remove(this.currentModel);
+
+    this.currentModel = object;
+
+    this.centerModel(object);
+    this.controls.target.set(0, 0, 0);
+    this.controls.update();
+
+    this.scene.add(object);
+    this.pressEnterText.setVisible(false);
+
+    const info = this.getModelInfo(object);
+
+    const hasAnimations = animations && animations.length > 0;
+
+    let animationText = "No animations";
+
+    if (hasAnimations)
+    {
+      animationText =
+        `Animations:\n` +
+        animations.map(a => "• " + (a.name || "(unnamed)")).join("\n");
+    }
+
+    const text =`Vertices: ${info.vertices}\n` + 
+                `Indices: ${info.indices}\n` + 
+                `Faces: ${info.faces}\n` +
+                `Meshes:\n${info.meshNames.map(n => "• " + n).join("\n")}\n` +
+               `${animationText}`;
+
+    this.modelInfoText.setText(text);
+    this.modelInfoText.setVisible(true);
+  }
+
   private loop = (time: number) =>
   {
     this.controls.update();
+
+    this.renderer.clear();
+
     this.renderer.render(this.scene, this.camera);
+
+    this.renderer.clearDepth();
+    this.renderer.render(this.hud_scene, this.hud_camera);
+
     requestAnimationFrame(this.loop);
   };
 }

@@ -80,15 +80,28 @@ export class ModelViewer
   private hud_camera!: THREE.OrthographicCamera;
   private renderer!: THREE.WebGLRenderer;
 
-  private modelInfoText!: HUDText;
-
   private controls!: OrbitControls;
 
   private currentModel?: THREE.Object3D;
 
-  private tempMatrix = new THREE.Matrix4();
-
   private pressEnterText!: HUDText;
+
+  private mixer?: THREE.AnimationMixer;
+  private actions: THREE.AnimationAction[] = [];
+  private activeAction?: THREE.AnimationAction;
+  private clock = new THREE.Clock();
+
+  private animationLineStartY = 0;
+  private animationLineHeight = 48;
+  private animationNames: string[] = [];
+
+  private raycaster = new THREE.Raycaster();
+  private mouse = new THREE.Vector2();
+
+  private infoTextGroup = new THREE.Group();
+
+  private animationSprites: THREE.Sprite[] = [];
+  private hoveredSprite?: THREE.Sprite;
 
   constructor(width: number, height: number)
   {
@@ -106,8 +119,8 @@ export class ModelViewer
     this.camera = new THREE.PerspectiveCamera(
       60,
       window.innerWidth / window.innerHeight,
-      0.1,
-      100
+      0.01,
+      10000
     );
 
     this.camera.position.set(0, 0, 20);
@@ -149,12 +162,6 @@ export class ModelViewer
       this.hud_camera.top = h / 2;
       this.hud_camera.bottom = -h / 2;
       this.hud_camera.updateProjectionMatrix();
-
-      this.modelInfoText.sprite.position.set(
-        -w / 2 + 320,
-        h / 2 - 500,
-        0
-      );
     });
 
     this.renderer.domElement.style.pointerEvents = 'auto';
@@ -181,16 +188,32 @@ export class ModelViewer
     this.pressEnterText.sprite.position.set(80, 0, 0);
     this.hud_scene.add(this.pressEnterText.sprite);
 
-    this.modelInfoText = new HUDText("", 28, 700, 600, 2000);
+    this.renderer.domElement.addEventListener("click", (e) =>
+    {
+      if (!this.animationNames.length) return;
 
-    this.modelInfoText.sprite.position.set(
-      -w / 2 + 320,
-      h / 2 - 500,
-      0
-    );
+      const rect = this.renderer.domElement.getBoundingClientRect();
 
-    this.modelInfoText.setVisible(false);
-    this.hud_scene.add(this.modelInfoText.sprite);
+      this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(this.mouse, this.hud_camera);
+
+      const intersects = this.raycaster.intersectObjects(
+        this.infoTextGroup.children
+      );
+
+      if (intersects.length > 0)
+      {
+        const obj = intersects[0].object;
+        const data = obj.userData;
+
+        if (data?.type === "animation")
+        {
+          this.playAnimation(data.index);
+        }
+      }
+    });
   }
 
   private initDragAndDrop()
@@ -349,10 +372,16 @@ export class ModelViewer
 
   private onModelLoaded(object: THREE.Object3D,animations: THREE.AnimationClip[] = [])
   {
+    this.infoTextGroup.clear();
+
     if (this.currentModel)
       this.scene.remove(this.currentModel);
 
     this.currentModel = object;
+
+    this.mixer = undefined;
+    this.actions = [];
+    this.activeAction = undefined;
 
     this.centerModel(object);
     this.controls.target.set(0, 0, 0);
@@ -363,33 +392,158 @@ export class ModelViewer
 
     const info = this.getModelInfo(object);
 
-    const hasAnimations = animations && animations.length > 0;
+    this.infoTextGroup.position.set(
+      -window.innerWidth * 0.25,
+       window.innerHeight * 0.25,
+      0
+    );
 
-    let animationText = "No animations";
+    let y = 0;
+    const lineHeight = 48;
 
-    if (hasAnimations)
+    const addLine = (text: string, color = "#ffffff") =>
     {
-      animationText =
-        `Animations:\n` +
-        animations.map(a => "• " + (a.name || "(unnamed)")).join("\n");
+      const sprite = this.createTextSprite(text, color);
+
+      sprite.position.set(0, -y, 0);
+
+      this.infoTextGroup.add(sprite);
+      y += lineHeight;
+    };
+
+    addLine(`Vertices: ${info.vertices}`);
+    addLine(`Indices: ${info.indices}`);
+    addLine(`Faces: ${info.faces}`);
+    addLine(`Meshes:`);
+
+    info.meshNames.forEach(name =>
+    {
+      addLine(`• ${name}`);
+    });
+
+    if (animations.length > 0)
+    {
+      addLine("Animations:");
+
+      const animationStartY = y;
+
+      this.mixer = new THREE.AnimationMixer(object);
+      this.animationNames = animations.map(a => a.name || "(unnamed)");
+      this.actions = [];
+
+      animations.forEach(clip =>
+      {
+        this.actions.push(this.mixer!.clipAction(clip));
+      });
+
+      this.playAnimation(0);
+
+      this.rebuildAnimationList(animationStartY, lineHeight);
+    }
+    else
+    {
+      addLine("No animations");
     }
 
-    const text =`Vertices: ${info.vertices}\n` + 
-                `Indices: ${info.indices}\n` + 
-                `Faces: ${info.faces}\n` +
-                `Meshes:\n${info.meshNames.map(n => "• " + n).join("\n")}\n` +
-               `${animationText}`;
+    this.hud_scene.add(this.infoTextGroup);
 
-    this.modelInfoText.setText(text);
-    this.modelInfoText.setVisible(true);
+    this.infoTextGroup.scale.set(0.5, 0.5, 1);
+  }
+
+  private rebuildAnimationList(startY: number, lineHeight: number)
+  {
+    this.animationSprites.forEach(s => this.infoTextGroup.remove(s));
+    this.animationSprites = [];
+
+    let y = startY;
+
+    this.animationNames.forEach((name, i) =>
+    {
+      const isActive = this.actions[i] === this.activeAction;
+      const prefix = isActive ? "▶ " : "• ";
+      const color  = isActive ? "#ffff00" : "#ffffff";
+
+      const sprite = this.createTextSprite(prefix + name, color);
+      sprite.position.set(0, -y, 0);
+
+      sprite.userData = {
+        type: "animation",
+        index: i
+      };
+
+      this.infoTextGroup.add(sprite);
+      this.animationSprites.push(sprite);
+
+      y += lineHeight;
+    });
+  }
+
+  private createTextSprite(text: string,color = "#ffffff",fontSize = 24): THREE.Sprite
+  {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+
+    ctx.font = `${fontSize}px Arial`;
+    const metrics = ctx.measureText(text);
+
+    canvas.width = metrics.width + 20;
+    canvas.height = fontSize + 20;
+
+    ctx.font = `${fontSize}px Arial`;
+    ctx.fillStyle = color;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillText(text, 10, 10);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+
+    const material = new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true
+    });
+
+    const sprite = new THREE.Sprite(material);
+
+    sprite.center.set(0, 1);
+
+    sprite.scale.set(
+      canvas.width,
+      canvas.height,
+      1
+    );
+
+    return sprite;
+  }
+
+  private playAnimation(index: number)
+  {
+    if (!this.mixer || !this.actions[index]) return;
+
+    if (this.activeAction)
+    {
+      this.activeAction.fadeOut(0.3);
+    }
+
+    this.activeAction = this.actions[index];
+    this.activeAction
+      .reset()
+      .fadeIn(0.3)
+      .play();
+
+    this.rebuildAnimationList(-(this.animationSprites[0]?.position.y ?? 0), 48);
   }
 
   private loop = (time: number) =>
   {
+    const delta = this.clock.getDelta();
+
+    if (this.mixer)
+      this.mixer.update(delta);
+
     this.controls.update();
 
     this.renderer.clear();
-
     this.renderer.render(this.scene, this.camera);
 
     this.renderer.clearDepth();

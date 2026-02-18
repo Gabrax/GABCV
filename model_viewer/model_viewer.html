@@ -1,20 +1,16 @@
 <style>
-.drop-zone {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 10px;
-  z-index: 1000;
-  padding: 10px 10px;
-  cursor: pointer;
-  user-select: none;
-  pointer-events: auto;
+body {
+  margin: 0;
+  overflow: hidden;
+}
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.drop-zone {
+  position: fixed;
+  inset: 0;
+}
+
+canvas {
+  display: block;
 }
 </style>
 

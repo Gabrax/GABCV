@@ -7,6 +7,8 @@
 
 </div>
 
+https://github.com/user-attachments/assets/87c693c0-e2dd-496f-999c-27da62c9d2d3
+
 <div align="center">
   
 ## Music visualizer

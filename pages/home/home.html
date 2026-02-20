@@ -1,0 +1,55 @@
+<style>
+.hero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+  color: white;
+  pointer-events: auto;
+}
+
+.hero h1 {
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  margin-bottom: 30px;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 12px 28px;
+  background: #6366f1;
+  border-radius: 8px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #4f46e5;
+  transform: translateY(-3px);
+}
+
+.btn.secondary {
+  background: transparent;
+  border: 2px solid #6366f1;
+}
+</style>
+
+<div id="container"></div>
+
+<div class="hero">
+  <h1>GABWEBGFX</h1>
+  <div class="buttons">
+    <a href="https://github.com/Gabrax" target="_blank" class="btn secondary"><i class="fa-brands fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/gabriel-ozeg/" target="_blank" class="btn secondary"> <i class="fa-brands fa-linkedin-in"></i></a>
+  </div>
+</div>

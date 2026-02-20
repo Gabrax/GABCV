@@ -174,7 +174,6 @@ export class Tetris
 
   private scene = new THREE.Scene();
   private camera!: THREE.PerspectiveCamera;
-  private renderer!: THREE.WebGLRenderer;
 
   private geometry = new THREE.BoxGeometry(1, 1, 1);
   private boardMesh!: THREE.InstancedMesh;
@@ -209,7 +208,7 @@ export class Tetris
   private blinkTimer = 0;
   public started = false;
 
-  constructor(width: number, height: number)
+  constructor(private renderer: THREE.WebGLRenderer, width: number, height: number)
   {
     this.board = new Board(width, height);
     this.maxBoardInstances = width * height;
@@ -224,64 +223,29 @@ export class Tetris
 
     this.spawn();
     this.initThree();
-
     this.updateListener();
-    requestAnimationFrame(this.loop);
   }
 
   private initThree()
   {
-    const container = document.getElementById("container")!;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-    this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.camera.position.set(
-      this.board.width / 2,
-      -this.board.height / 2,
-      40
-    );
+    this.camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
+    this.camera.position.set(this.board.width / 2, -this.board.height / 2, 40);
     this.camera.lookAt(this.board.width / 2, -this.board.height / 2, 0);
-
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(this.renderer.domElement);
 
     const boardMaterial = new THREE.MeshStandardMaterial({ color: "cyan" });
     const figureMaterial = new THREE.MeshStandardMaterial({ color: "orange" });
-    const ghostMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.25
-    });
+    const ghostMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
     const previewMaterial = new THREE.MeshStandardMaterial({ color: "lime" });
 
-    this.boardMesh = new THREE.InstancedMesh(
-      this.geometry,
-      boardMaterial,
-      this.maxBoardInstances
-    );
+    this.boardMesh = new THREE.InstancedMesh(this.geometry, boardMaterial, this.maxBoardInstances);
+    this.figureMesh = new THREE.InstancedMesh(this.geometry, figureMaterial, this.maxShapeInstances);
+    this.nextMesh = new THREE.InstancedMesh(this.geometry, previewMaterial, this.maxPreviewInstances);
+    this.ghostMesh = new THREE.InstancedMesh(this.geometry, ghostMaterial, this.maxShapeInstances);
 
-    this.figureMesh = new THREE.InstancedMesh(
-      this.geometry,
-      figureMaterial,
-      this.maxShapeInstances
-    );
-
-    this.nextMesh = new THREE.InstancedMesh(
-      this.geometry,
-      previewMaterial,
-      this.maxPreviewInstances
-    );
-
-    this.ghostMesh = new THREE.InstancedMesh(
-      this.geometry,
-      ghostMaterial,
-      this.maxShapeInstances
-    );
-
-    this.scene.add(this.boardMesh);
-    this.scene.add(this.figureMesh);
-    this.scene.add(this.nextMesh);
-    this.scene.add(this.ghostMesh);
+    this.scene.add(this.boardMesh, this.figureMesh, this.ghostMesh, this.nextMesh);
 
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -295,9 +259,11 @@ export class Tetris
     this.createNextShapeFrame();
 
     window.addEventListener("resize", () => {
-      this.camera.aspect = window.innerWidth / window.innerHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      this.camera.aspect = w / h;
       this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
     });
   }
 
@@ -445,30 +411,57 @@ export class Tetris
     });
   }
 
-  private update(time: number)
+  public update(time: number)
   {
-    const dt = time - this.lastUpdate;
-    this.lastUpdate = time;
-
-    this.dropProgress += dt / this.fallDelay;
-
-    if (this.dropProgress >= 1)
+    if (!this.started || this.gameOver)
     {
-      this.dropProgress = 0;
-      this.previousY = this.current.y;
+      this.blinkTimer += 0.016;
+      this.pressEnterText.setVisible(Math.sin(this.blinkTimer * 3) > 0);
+    }
+    else
+    {
+      const dt = time - this.lastUpdate;
+      this.lastUpdate = time;
 
-      if (this.board.isValid(this.current, 0, 1)) this.current.y++;
-      else
+      this.dropProgress += dt / this.fallDelay;
+
+      if (this.dropProgress >= 1)
       {
-        this.board.lock(this.current);
-        this.board.clearLines();
-        this.spawn();
-        return;
+        this.dropProgress = 0;
+        this.previousY = this.current.y;
+
+        if (this.board.isValid(this.current, 0, 1))
+          this.current.y++;
+        else
+        {
+          this.board.lock(this.current);
+          this.board.clearLines();
+          this.spawn();
+        }
       }
+
+      this.visualY = this.previousY + (this.current.y - this.previousY) * this.dropProgress;
     }
 
-    this.visualY = this.previousY +
-                  (this.current.y - this.previousY) * this.dropProgress;
+    if (this.started && !this.gameOver)
+    {
+      this.renderBoard();
+      this.renderGhost();
+      this.renderShape();
+      this.renderNext();
+    }
+    else
+    {
+      this.boardMesh.count = 0;
+      this.ghostMesh.count = 0;
+      this.figureMesh.count = 0;
+      this.nextMesh.count = 0;
+    }
+
+    this.scoreText.setText(`SCORE: ${this.score}`);
+
+    this.renderer.clearDepth();
+    this.renderer.render(this.scene, this.camera);
   }
 
   private renderNext()
@@ -575,37 +568,6 @@ export class Tetris
     this.figureMesh.instanceMatrix.needsUpdate = true;
   }
 
-  private loop = (time: number) =>
-  {
-    if (!this.started || this.gameOver)
-    {
-      this.blinkTimer += 0.016;
-      this.pressEnterText.setVisible(
-        Math.sin(this.blinkTimer * 3) > 0
-      );
-    }
-
-    if (this.started && !this.gameOver)
-    {
-      this.update(time);
-      this.renderBoard();
-      this.renderGhost();
-      this.renderShape();
-      this.renderNext();
-    }
-    else
-    {
-      this.boardMesh.count = 0;
-      this.ghostMesh.count = 0;
-      this.figureMesh.count = 0;
-      this.nextMesh.count = 0;
-    }
-
-    this.scoreText.setText(`SCORE: ${this.score}`);
-
-    this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.loop);
-  };
 
   move(dx: number)
   {

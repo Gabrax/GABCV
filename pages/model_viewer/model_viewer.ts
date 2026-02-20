@@ -20,8 +20,6 @@ class HUDText
     this.ctx = this.canvas.getContext("2d")!;
     this.ctx.font = `bold ${fontSize}px monospace`;
     this.ctx.fillStyle = "white";
-    //this.ctx.textAlign = "center";
-    //this.ctx.textBaseline = "middle";
     this.ctx.textAlign = "left";
     this.ctx.textBaseline = "top";
 
@@ -75,10 +73,9 @@ export class ModelViewer
   private obj_loader = new OBJLoader();
   private mtl_loader = new MTLLoader();
   private scene = new THREE.Scene();
-  private camera!: THREE.PerspectiveCamera;
+  public camera!: THREE.PerspectiveCamera;
   private hud_scene = new THREE.Scene();
   private hud_camera!: THREE.OrthographicCamera;
-  private renderer!: THREE.WebGLRenderer;
 
   private controls!: OrbitControls;
 
@@ -103,19 +100,15 @@ export class ModelViewer
   private animationSprites: THREE.Sprite[] = [];
   private hoveredSprite?: THREE.Sprite;
 
-  constructor(width: number, height: number)
+  constructor(private renderer: THREE.WebGLRenderer)
   {
     this.initThree();
     this.initHUD();
     this.initDragAndDrop();
-
-    requestAnimationFrame(this.loop);
   }
 
   private initThree()
   {
-    const container = document.getElementById("container")!;
-
     this.camera = new THREE.PerspectiveCamera(
       60,
       window.innerWidth / window.innerHeight,
@@ -125,11 +118,6 @@ export class ModelViewer
 
     this.camera.position.set(0, 0, 20);
     this.camera.lookAt(0, 0, 0);
-
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.autoClear = false;
-    container.appendChild(this.renderer.domElement);
 
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 
@@ -534,21 +522,18 @@ export class ModelViewer
     this.rebuildAnimationList(-(this.animationSprites[0]?.position.y ?? 0), 48);
   }
 
-  private loop = (time: number) =>
+  public update(time: number)
   {
     const delta = this.clock.getDelta();
 
-    if (this.mixer)
-      this.mixer.update(delta);
+    if (this.mixer) this.mixer.update(delta);
 
     this.controls.update();
 
-    this.renderer.clear();
+    this.renderer.clearDepth();
     this.renderer.render(this.scene, this.camera);
 
     this.renderer.clearDepth();
     this.renderer.render(this.hud_scene, this.hud_camera);
-
-    requestAnimationFrame(this.loop);
-  };
+  }
 }

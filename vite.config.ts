@@ -8,9 +8,10 @@ export default {
         rollupOptions: {
             input: {
                 main: path.resolve(__dirname,'index.html'),
-                viewer: path.resolve(__dirname,'model_viewer/model_viewer.html'),
-                visualizer: path.resolve(__dirname,'music_visualizer/music_visualizer.html'),
-                tetris: path.resolve(__dirname,'tetris/tetrisGame.html'),
+                home: path.resolve(__dirname,'pages/home/home.html'),
+                viewer: path.resolve(__dirname,'pages/model_viewer/model_viewer.html'),
+                visualizer: path.resolve(__dirname,'pages/music_visualizer/music_visualizer.html'),
+                tetris: path.resolve(__dirname,'pages/tetris/tetrisGame.html'),
             },
         }
     },

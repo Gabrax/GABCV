@@ -1,4 +1,4 @@
-import "https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js";
+import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 import "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.3.0/simplex-noise.min.js";
 
 const vertexShader = `
@@ -35,7 +35,6 @@ export class MusicVisualizerPlayer
 
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
-  private renderer!: THREE.WebGLRenderer;
   private sphere!: THREE.Mesh;
 
   private tracks: Song[] =
@@ -73,11 +72,10 @@ export class MusicVisualizerPlayer
   private cover!: HTMLImageElement;
   private currentTimeEL!: HTMLElement;
   private durationEL!: HTMLElement;
-  private visualizerContainer!: HTMLElement;
 
   private noise = new SimplexNoise();
 
-  constructor()
+  constructor(private renderer: THREE.WebGLRenderer)
   {
     this.playBtn = document.getElementById('play')!;
     this.prevBtn = document.getElementById('prev')!;
@@ -90,7 +88,6 @@ export class MusicVisualizerPlayer
     this.cover = document.getElementById('cover') as HTMLImageElement;
     this.currentTimeEL = document.getElementById('curr-time')!;
     this.durationEL = document.getElementById('duration')!;
-    this.visualizerContainer = document.getElementById('visualiser')!;
 
     this.audio.src = this.tracks[this.index].path;
     this.audio.volume = 0.5;
@@ -100,8 +97,6 @@ export class MusicVisualizerPlayer
     this.initDragAndDrop();
     this.bindUI();
     this.loadTrack(this.index);
-
-    this.animate();
   }
 
   private initAudio()
@@ -123,10 +118,6 @@ export class MusicVisualizerPlayer
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 80;
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.visualizerContainer.appendChild(this.renderer.domElement);
-
     const geometry = new THREE.IcosahedronGeometry(20, 3);
     const material = new THREE.ShaderMaterial
     ({
@@ -145,8 +136,6 @@ export class MusicVisualizerPlayer
     light.position.set(0, 50, 100);
     this.scene.add(light);
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-
-    window.addEventListener('resize', () => this.onResize());
   }
 
   private initDragAndDrop() {
@@ -259,17 +248,8 @@ export class MusicVisualizerPlayer
     this.audio.currentTime = (clickX / width) * this.audio.duration;
   }
 
-  private onResize()
+  public update(time: number)
   {
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-  }
-
-  private animate = () =>
-  {
-    requestAnimationFrame(this.animate);
-
     this.analyser.getByteFrequencyData(this.data);
 
     const lowerHalf = this.data.slice(0, this.data.length / 2);
@@ -284,27 +264,44 @@ export class MusicVisualizerPlayer
     this.sphere.rotation.y += 0.003;
     this.sphere.rotation.z += 0.005;
 
+    this.renderer.clearDepth();
     this.renderer.render(this.scene, this.camera);
-  };
+  }
 
-  private warpSphere(mesh: THREE.mesh, bass: number, treble: number)
+  private warpSphere(mesh: THREE.Mesh, bass: number, treble: number)
   {
+    const geometry = mesh.geometry as THREE.BufferGeometry;
+    const pos = geometry.attributes.position as THREE.BufferAttribute;
     const noise = this.noise;
 
-    mesh.geometry.vertices.forEach(function (vertex, i) {
-      var offset = mesh.geometry.parameters.radius;
-      var amp = 5;
-      var time = window.performance.now();
-      vertex.normalize();
-      var rf = 0.00001;
-      var distance = (offset + bass) + noise.noise3D(vertex.x + time * rf * 4,
-                                                       vertex.y + time * rf * 6,
-                                                       vertex.z + time * rf * 7) * amp * treble *2;
-      vertex.multiplyScalar(distance);
-    });
-    mesh.geometry.verticesNeedUpdate = true;
-    mesh.geometry.normalsNeedUpdate = true;
-    mesh.geometry.computeVertexNormals();
-    mesh.geometry.computeFaceNormals();
+    if (!pos) return;
+
+    for (let i = 0; i < pos.count; i++)
+    {
+      let x = pos.getX(i);
+      let y = pos.getY(i);
+      let z = pos.getZ(i);
+
+      const len = Math.sqrt(x*x + y*y + z*z) || 1;
+      x /= len;
+      y /= len;
+      z /= len;
+
+      const offset = 20;
+      const amp = 5;
+      const time = window.performance.now();
+      const rf = 0.00001;
+
+      const distance = offset + bass + noise.noise3D(
+          x + time*rf*4,
+          y + time*rf*6,
+          z + time*rf*7
+      ) * amp * treble * 2;
+
+      pos.setXYZ(i, x*distance, y*distance, z*distance);
+    }
+
+    pos.needsUpdate = true;
+    geometry.computeVertexNormals();
   }
 }
